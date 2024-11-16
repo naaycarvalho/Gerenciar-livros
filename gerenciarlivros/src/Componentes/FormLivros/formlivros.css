@@ -6,7 +6,18 @@
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px black;
     padding: 20px;   
-    height: 500px;
+    height: 750px;
+    margin-left: 300px;
+  
    
    
+}
+.lista{
+    width: 1400px;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 20px;
+ 
+
 }

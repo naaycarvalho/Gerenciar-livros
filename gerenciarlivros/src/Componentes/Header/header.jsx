@@ -4,7 +4,7 @@ function Header() {
         <>
         <header className="p-3 mb-3  ">
             <div className="header">
-               Gerenciar Livros
+               Controll Books
                
             </div>
         </header>
