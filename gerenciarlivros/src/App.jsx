@@ -1,33 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-
-
-
-
 import SideBar from './Componentes/SideBar/sidebar';
 import Header from './Componentes/Header/header';
-import Usuarios from './pages/gerenciarusuarios';
-import Fornecedores from './pages/gerenciarfornecedores';
+import Usuarios from './pages/Usuarios';
+import FornecedorForm  from './pages/gerenciarfornecedores';
 import FormLivros from './pages/gerenciarlivros';
+import Home from './pages/Home';
+import "./App.css";
 
 function App() {
   return (
-    
-      <div className="App d-flex">
-        {/* Barra Lateral */}
-      <SideBar />
-      <Container fluid>
-           <Header />
-            <Routes>
-              <Route path="/" element={<h1>Bem-vindo ao Sistema</h1>} />
-              <Route path="/formlivros" element={<FormLivros />} />
-              <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/fornecedores" element={<Fornecedores  />} />
-            </Routes>
-          </Container>
-      </div>
-   
-  
+  <div className="App">
+    {/* Barra Lateral */}
+    <SideBar />
+    {/* Main Content */}
+    <div style={{ marginLeft: '280px', flex: 1 }}>
+     {/* Header */}
+      <Header />
+      {/* Central Content Container */}
+      <Container className="mt-5">
+        <Routes>
+          <Route path="/" element={<Home/>} />
+          <Route path="/formlivros" element={<FormLivros />} />
+          <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/fornecedores" element={<FornecedorForm />} />
+        </Routes>
+      </Container>
+    </div>
+  </div>
   );
 }
 

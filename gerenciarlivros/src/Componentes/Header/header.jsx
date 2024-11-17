@@ -1,15 +1,14 @@
+import { Container } from 'react-bootstrap';
 import './header.css'
+
 function Header() {
     return (
-        <>
-        <header className="p-3 mb-3  ">
-            <div className="header">
-               Controll Books
-               
-            </div>
+        <header className="header py-3">
+          <Container>
+            Controll Books
+          </Container>
         </header>
-        </>
     )
 }
 
-export default Header
+export default Header;
