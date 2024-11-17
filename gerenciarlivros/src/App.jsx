@@ -7,7 +7,7 @@ import { Container } from 'react-bootstrap';
 import SideBar from './Componentes/SideBar/sidebar';
 import Header from './Componentes/Header/header';
 import Usuarios from './pages/gerenciarusuarios';
-import Fornecedores from './pages/gerenciarfornecedores';
+import FornecedorForm from './pages/gerenciarfornecedores';
 import FormLivros from './pages/gerenciarlivros';
 
 function App() {
@@ -17,16 +17,16 @@ function App() {
         {/* Barra Lateral */}
       <SideBar />
       <Container fluid>
-           <Header />
+          <Header />
             <Routes>
               <Route path="/" element={<h1>Bem-vindo ao Sistema</h1>} />
               <Route path="/formlivros" element={<FormLivros />} />
               <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/fornecedores" element={<Fornecedores  />} />
+              <Route path="/Fornecedor" element={<FornecedorForm  />} />
             </Routes>
           </Container>
       </div>
-   
+  
   
   );
 }
