@@ -15,19 +15,19 @@ function FormLivros() {
     Estado: 'Novo',
     Tombo: '',
     DataDeCadastro: '',
-    Observacoes: ''
+    Observacoes: '',
+    Categoria: ''
   });
 
   const [listaLivros, setListaLivros] = useState([]);
-  const [indexEditando, setIndexEditando] = useState(null); // Novo estado para controlar a edição
+  const [indexEditando, setIndexEditando] = useState(null);
+  const [validated, setValidated] = useState(false);
 
-  // Carregar lista de livros do localStorage ao carregar o componente
   useEffect(() => {
     const livrosArmazenados = JSON.parse(localStorage.getItem('Livro')) || [];
     setListaLivros(livrosArmazenados);
   }, []);
 
-  // Atualizar estado ao digitar
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLivro((prevLivro) => ({
@@ -36,25 +36,30 @@ function FormLivros() {
     }));
   };
 
-  // Submeter o formulário e salvar no localStorage
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Verificar se todos os campos obrigatórios estão preenchidos
+    const camposObrigatorios = ['Titulo', 'Autor', 'Editora', 'Ano', 'ISBN', 'NumeroDePaginas', 'Categoria', 'Tombo', 'DataDeCadastro'];
+    const formularioValido = camposObrigatorios.every((campo) => Livro[campo]?.trim() !== '');
+
+    setValidated(true);
+
+    if (!formularioValido) {
+      return; // Não submeter se algum campo obrigatório estiver vazio
+    }
 
     if (indexEditando === null) {
-      // Adicionar novo livro
       const novaListaLivros = [...listaLivros, Livro];
       setListaLivros(novaListaLivros);
       localStorage.setItem('Livro', JSON.stringify(novaListaLivros));
     } else {
-      // Atualizar livro existente
       const novaListaLivros = [...listaLivros];
       novaListaLivros[indexEditando] = Livro;
       setListaLivros(novaListaLivros);
       localStorage.setItem('Livro', JSON.stringify(novaListaLivros));
-      setIndexEditando(null); // Resetar o índice de edição
+      setIndexEditando(null);
     }
 
-    // Limpar o formulário
     setLivro({
       Titulo: '',
       Autor: '',
@@ -66,11 +71,12 @@ function FormLivros() {
       Estado: 'Novo',
       Tombo: '',
       DataDeCadastro: '',
-      Observacoes: ''
+      Observacoes: '',
+      Categoria: ''
     });
+    setValidated(false); // Resetar validação
   };
 
-  // Excluir um livro da lista
   const handleDelete = (index) => {
     if (window.confirm("Tem certeza que deseja excluir este livro?")) {
       const novaListaLivros = listaLivros.filter((_, i) => i !== index);
@@ -79,15 +85,15 @@ function FormLivros() {
     }
   };
 
-  // Editar um livro da lista
   const handleEdit = (index) => {
     const livroParaEditar = listaLivros[index];
     setLivro(livroParaEditar);
-    setIndexEditando(index); // Definir o índice do livro que está sendo editado
+    setIndexEditando(index);
   };
 
+
     return (
-        <Form onSubmit={handleSubmit} className='FormLivros'  >
+        <Form noValidate  validated={validated} onSubmit={handleSubmit} className='FormLivros'  >
             <Card className="mb-3">
                 <Card.Header>Cadastrar Livro</Card.Header>
                 <Card.Body>
@@ -100,6 +106,7 @@ function FormLivros() {
                         value={Livro.Titulo}
                         onChange={handleChange}
                         required 
+                        isInvalid={validated && Livro.Titulo.trim() === ''}
                         />
                         <Form.Control.Feedback type="invalid">
                             Por favor, digite o Título completo.
@@ -111,11 +118,13 @@ function FormLivros() {
                             <Form.Group controlId="FormAutor">
                                 <Form.Label>Autor</Form.Label>
                                 <Form.Control 
+                                
                                 type="text" 
                                 placeholder="Autor do Livro"
                                 name="Autor"
                                 value={Livro.Autor}
                                 onChange={handleChange}
+                                isInvalid={validated && Livro.Autor.trim() === ''}
                                 required />
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, digite o nome do Autor completo.
@@ -131,6 +140,7 @@ function FormLivros() {
                                  name="Editora"
                                  value={Livro.Editora}
                                  onChange={handleChange}
+                                 isInvalid={validated && Livro.Editora.trim() === ''}
                                  required />
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, digite o número de edição.
@@ -148,6 +158,7 @@ function FormLivros() {
                                  name="Ano"
                                  value={Livro.Ano}
                                  onChange={handleChange}
+                                 isInvalid={validated && Livro.Ano.trim() === ''}
                                  required />
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, selecione a data de publicação.
@@ -162,7 +173,8 @@ function FormLivros() {
                                 placeholder="Categoria"
                                 name="Categoria"
                                 value={Livro.Categoria}
-                                onChange={handleChange} 
+                                onChange={handleChange}
+                                isInvalid={validated && Livro.Categoria.trim() === ''} 
                                 required />
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, digite a Categoria.
@@ -183,6 +195,7 @@ function FormLivros() {
                                  value={Livro.ISBN}
                                  onChange={handleChange}
                                  className='form-control'
+                                 isInvalid={validated && Livro.ISBN.trim() === ''}
                                 required />
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, digite o ISBN da obra.
@@ -194,10 +207,12 @@ function FormLivros() {
                                 <Form.Label>Número de Páginas</Form.Label>
                                 <Form.Control 
                                 type="text" 
+                                maxLength={4}
                                 placeholder="Número de Páginas" 
                                 name="NumeroDePaginas"
                                 value={Livro.NumeroDePaginas}
                                 onChange={handleChange}
+                                isInvalid={validated && Livro.NumeroDePaginas.trim() === ''}
                                 required/>
                                 <Form.Control.Feedback type="invalid">
                                     Por favor, digite o número de páginas.
@@ -242,9 +257,11 @@ function FormLivros() {
                                 <Form.Control 
                                 type="text"
                                 placeholder="Nº do Tombo"
+                                maxLength={5}
                                 name="Tombo"
                                 value={Livro.Tombo}
                                 onChange={handleChange}
+                                isInvalid={validated && Livro.Tombo.trim() === ''}
                                 required />
                             </Form.Group>
                         </Col>
@@ -256,6 +273,7 @@ function FormLivros() {
                                 name="DataDeCadastro"
                                 value={Livro.DataDeCadastro}
                                 onChange={handleChange}
+                                isInvalid={validated && Livro.DataDeCadastro.trim() === ''}
                                 required />
                             </Form.Group>
                         </Col>
@@ -274,7 +292,7 @@ function FormLivros() {
                     <Button variant="success" type='submit'  className="m-2">
                         <i className="bi bi-check-lg">{indexEditando === null ? 'Cadastrar' : 'Salvar'} </i>
                     </Button>
-                    <Button variant="secondary" type='submit'>Cancelar</Button>
+                    <Button variant="secondary" type='button'>Cancelar</Button>
                 </Card.Body>
             </Card>
 
