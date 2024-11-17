@@ -23,7 +23,7 @@ function SideBar() {
         </Nav.Item>
         <br />
         <Nav.Item>
-          <Nav.Link as={Link} to="/Fornecedores" className="text-white">
+          <Nav.Link as={Link} to="/Fornecedor" className="text-white">
             <i className="bi bi-clipboard2-check"></i> Gerenciar Fornecedores
           </Nav.Link>
         </Nav.Item>
@@ -37,10 +37,3 @@ function SideBar() {
 }
 
 export default SideBar;
-
-
-  
-  
-
-
- 
