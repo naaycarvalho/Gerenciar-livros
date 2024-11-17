@@ -9,6 +9,7 @@ import Header from './Componentes/Header/header';
 import Usuarios from './pages/gerenciarusuarios';
 import Fornecedores from './pages/gerenciarfornecedores';
 import FormLivros from './pages/gerenciarlivros';
+import Home from './pages/home';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
       <Container fluid>
            <Header />
             <Routes>
-              <Route path="/" element={<h1>Bem-vindo ao Sistema</h1>} />
+              <Route path="/" element={<Home />} />
               <Route path="/formlivros" element={<FormLivros />} />
               <Route path="/usuarios" element={<Usuarios />} />
               <Route path="/fornecedores" element={<Fornecedores  />} />

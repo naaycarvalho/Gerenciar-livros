@@ -4,7 +4,7 @@ import './sidebar.css';
 
 function SideBar() {
   return (
-    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar">
+    <div className="d-flex flex-column flex-shrink-0 p-3 text-white SideBar" >
       <Link to="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span className="fs-4"><i className="bi bi-list"></i></span>
       </Link>

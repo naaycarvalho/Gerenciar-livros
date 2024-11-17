@@ -7,17 +7,19 @@
     box-shadow: 0px 0px 10px 0px black;
     padding: 20px;   
     height: 750px;
-    margin-left: 300px;
+    margin-left: 400px;
   
    
    
 }
 .lista{
-    width: 1400px;
+    width: 1200px;
     margin: auto;
     margin-top: 30px;
     border-radius: 10px;
-    padding: 20px;
+    padding: 20px;  
+    box-shadow: 0px 0px 10px 0px black;
+
  
 
 }
