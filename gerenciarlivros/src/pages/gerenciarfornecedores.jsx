@@ -76,7 +76,7 @@ function FornecedorForm() {
               <Form.Group controlId="formRazaoSocial">
                 <Form.Label>Razão Social</Form.Label>
                 <Form.Control
-                className="teste"
+                  required
                   type="text"
                   placeholder="Digite a Razão Social"
                   name="razaoSocial"
@@ -89,6 +89,7 @@ function FornecedorForm() {
               <Form.Group controlId="formCNPJ">
                 <Form.Label>CNPJ</Form.Label>
                 <InputMask
+                  required
                   mask="99.999.999/9999-99"
                   placeholder="Digite o CNPJ"
                   name="cnpj"
@@ -106,6 +107,7 @@ function FornecedorForm() {
               <Form.Group controlId="formRepresentante">
                 <Form.Label>Representante</Form.Label>
                 <Form.Control
+                  required
                   type="text"
                   placeholder="Digite o nome do Representante"
                   name="representante"
@@ -118,6 +120,7 @@ function FornecedorForm() {
               <Form.Group controlId="formTelefone">
                 <Form.Label>Telefone</Form.Label>
                 <InputMask
+                  required
                   mask="(99) 99999-9999"
                   placeholder="Digite o Telefone"
                   name="telefone"
@@ -135,6 +138,7 @@ function FornecedorForm() {
               <Form.Group controlId="formEmail">
                 <Form.Label>E-mail</Form.Label>
                 <Form.Control
+                  required
                   type="email"
                   placeholder="Digite o E-mail"
                   name="email"
@@ -147,6 +151,7 @@ function FornecedorForm() {
               <Form.Group controlId="formEndereco">
                 <Form.Label>Endereço</Form.Label>
                 <Form.Control
+                  required
                   type="text"
                   placeholder="Digite o Endereço"
                   name="endereco"
@@ -194,6 +199,7 @@ function FornecedorForm() {
               <Form.Group controlId="formAgencia">
                 <Form.Label>Agência</Form.Label>
                 <InputMask
+                  required
                   mask="9999-9"
                   placeholder="Digite a Agência"
                   name="agencia"
@@ -207,6 +213,7 @@ function FornecedorForm() {
               <Form.Group controlId="formConta">
                 <Form.Label>Conta</Form.Label>
                 <InputMask
+                  required
                   mask="9999999999-9"
                   placeholder="Digite a Conta"
                   name="conta"
@@ -226,7 +233,7 @@ function FornecedorForm() {
       </Form>
       <br />
 
-      {/* Lista de Fornecedores */}
+
       <h3>Lista de Fornecedores</h3>
       {fornecedores.length === 0 ? (
         <p>Nenhum fornecedor cadastrado.</p>
