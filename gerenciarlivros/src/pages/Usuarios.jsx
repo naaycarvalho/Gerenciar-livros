@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Stack from 'react-bootstrap/Stack';
-import FormUser from '../Componentes/Usuarios/FormUser'
-import ListUser from '../Componentes/Usuarios/ListUser'
-import './usuarios.css'
+import FormUser from '../Componentes/Usuarios/FormUser';
+import ListUser from '../Componentes/Usuarios/ListUser';
+import './usuarios.css';
+import ClienteService from '../services/ClienteService';
+
+const clienteService = new ClienteService();
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([]);
-  const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [usuarioId, setUsuarioId] = useState(0);
 
-  // Carregar a lista de usuários do localStorage
+  // Carregar os usuários do banco de dados
+  const carregaUsuarios = async () =>{
+    const response = await clienteService.obterTodosUsuarios();
+    setUsuarios(response.data);
+  }
+
   useEffect(() => {
-    const usuariosSalvos = JSON.parse(localStorage.getItem('usuarios')) || [];
-    setUsuarios(usuariosSalvos);
-  }, []);
+    carregaUsuarios();
+  });
 
   // Função para adicionar um novo usuário
   const salvarUsuario = (usuario, index) => {
@@ -33,14 +40,13 @@ function Usuarios() {
   };
 
   // Função para iniciar a edição de um usuário
-  const editarUsuario = (index) => {
-    setUsuarioEditando(usuarios[index]); 
-    setUsuarioEditandoIndex(index); 
+  const editarUsuario = (id) => {
+    console.log('chegou')
+    setUsuarioId(id); 
   };
 
-  const [usuarioEditandoIndex, setUsuarioEditandoIndex] = useState(null);
 
-  // Função para excluir um usuário
+// Função para excluir um usuário
   const excluirUsuario = (index) => {
     const confirmar = window.confirm("Tem certeza que deseja excluir o usuário?");
 
@@ -53,14 +59,13 @@ function Usuarios() {
   };
 
   const cancelar = () => {
-    setUsuarioEditando(null);
-    setUsuarioEditandoIndex(null);
+    setUsuarioId(0);
   }
 
   return (
     <Stack gap={2} className='usuarios'>
       <div className="p-2">
-        <FormUser onSalvarUsuario={salvarUsuario} onCancelar={cancelar} usuarioEditando={usuarioEditando} usuarioEditandoIndex={usuarioEditandoIndex}/>
+        <FormUser usuarioId={usuarioId} onSalvarUsuario={salvarUsuario} onCancelar={cancelar} />
       </div>
       <div className="p-2">
         <ListUser usuarios={usuarios} onEditarUsuario={editarUsuario} onExcluirUsuario={excluirUsuario} />

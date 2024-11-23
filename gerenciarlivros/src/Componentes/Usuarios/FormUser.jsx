@@ -1,68 +1,50 @@
-import React, { useState, useEffect  } from 'react';
+import { useState, useEffect  } from 'react';
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { cpf } from 'cpf-cnpj-validator'
 import * as yup from 'yup';
 import InputMask from 'react-input-mask';
+import '../../pages/usuarios.css';
+import PropTypes from 'prop-types';
+import ClienteService from '../../services/ClienteService';
 
-// Definindo o esquema de validação com yup
-const schema = yup.object().shape({
-    nome: yup.string()
-        .required("O nome é obrigatório."),
-    cpf: yup.string()
-        .required("O CPF é obrigatório.")
-        .test("valid-cpf", "CPF inválido.", value => cpf.isValid(value)),
-    dataNascimento: yup.date()
-        .nullable()
-        .required("A data de nascimento é obrigatória.")
-        .max(new Date(), "Data de nascimento não pode ser no futuro."),
-    endereco: yup.string()
-        .required("O endereço é obrigatório."),
-    cep: yup.string()
-        .required("O CEP é obrigatório.")
-        .matches(/^\d{5}-\d{3}$/, "CEP inválido. Formato esperado: 12345-678"),
-    telefone: yup.string()
-        .required("O telefone é obrigatório.")
-        .matches(/^\(\d{2}\)\s\d{4,5}-\d{4}$/, "Telefone inválido. Formato esperado: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"),
-    email: yup.string()
-        .required("O e-mail é obrigatório.").email("E-mail inválido."),
-    tipoUsuario: yup.string()
-        .required('Tipo de usuário é obrigatório')       
-});
+const clienteService = new ClienteService();
 
-function FormUser({ onSalvarUsuario, onCancelar, usuarioEditando, usuarioEditandoIndex }){
-    const [nome, setNome] = useState(usuarioEditando ? usuarioEditando.nome : '');
-    const [cpf, setCpf] = useState(usuarioEditando ? usuarioEditando.cpf : '');
-    const [dataNascimento, setDataNascimento] = useState(usuarioEditando ? usuarioEditando.dataNascimento : '');
-    const [endereco, setEndereco] = useState(usuarioEditando ? usuarioEditando.endereco : '');
-    const [cep, setCep] = useState(usuarioEditando ? usuarioEditando.cep : '');
-    const [telefone, setTelefone] = useState(usuarioEditando ? usuarioEditando.telefone : '');
-    const [email, setEmail] = useState(usuarioEditando ? usuarioEditando.email : '');
-    const [tipoUsuario, setTipoUsuario] = useState(usuarioEditando ? usuarioEditando.tipoUsuario : '');
+const FormUser = ({ usuarioId }) => {
+    const [nome, setNome] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [dataNascimento, setDataNascimento] = useState('');
+    const [endereco, setEndereco] = useState('');
+    const [cep, setCep] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [email, setEmail] = useState('');
+    const [tipoUsuario, setTipoUsuario] = useState('');
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        if (usuarioEditando) {
-          setNome(usuarioEditando.nome);
-          setCpf(usuarioEditando.cpf);
-          setDataNascimento(usuarioEditando.dataNascimento);
-          setEndereco(usuarioEditando.endereco);
-          setCep(usuarioEditando.cep);
-          setTelefone(usuarioEditando.telefone);
-          setEmail(usuarioEditando.email);
-          setTipoUsuario(usuarioEditando.tipoUsuario);
+        if (usuarioId > 0) {
+            clienteService.obterUsuarioPorId(usuarioId).then((response) => {
+                carregaFormulario(response.data);
+            }).catch((erro) => {
+                console.error('Erro ao buscar o usuário:', erro);
+            });
         }
-    }, [usuarioEditando]);
+    });
 
-    // Função para limpar o formulário
+// Carregar os campos do formulário
+    const carregaFormulario = (usuario) => {
+        //console.log()
+        setNome(usuario ? usuario.nome : '');
+        setCpf(usuario ? usuario.cpf: '');
+        setDataNascimento(usuario ? usuario.dataNascimento : '');
+        setEndereco(usuario ? usuario.endereco : '');
+        setCep(usuario ? usuario.cep : '');
+        setTelefone(usuario ? usuario.telefone : '');
+        setEmail(usuario ? usuario.email : '');
+        setTipoUsuario(usuario ? usuario.tipoUsuario : '');
+    };
+
     const limparFormulario = () => {
-        setNome('');
-        setCpf('');
-        setDataNascimento('');
-        setEndereco('');
-        setCep('');
-        setTelefone('');
-        setEmail('');
-        setTipoUsuario('');
+        carregaFormulario(null);
         setErrors({});
     };
 
@@ -72,21 +54,13 @@ function FormUser({ onSalvarUsuario, onCancelar, usuarioEditando, usuarioEditand
          // Validar e transformar a data de nascimento para null caso esteja vazia
         const validDataNascimento = dataNascimento === "" ? null : dataNascimento;
 
-        const userData = {
-            nome,
-            cpf,
-            dataNascimento: validDataNascimento,
-            endereco,
-            cep,
-            telefone,
-            email,
-            tipoUsuario
-        };
+        const userData = { nome, cpf, dataNascimento: validDataNascimento, 
+            endereco, cep, telefone, email, tipoUsuario };
 
         schema
             .validate(userData, { abortEarly: false })
             .then(() => {
-                onSalvarUsuario(userData, usuarioEditandoIndex);
+                // onSalvarUsuario(userData, usuarioEditandoIndex);
                 limparFormulario();
             })
             .catch((err) => {
@@ -102,7 +76,7 @@ function FormUser({ onSalvarUsuario, onCancelar, usuarioEditando, usuarioEditand
 
     return(
         <div className="card">
-            <h5 className="card-header">{usuarioEditando ? 'Editar Usuário' : 'Cadastrar Usuário'}</h5>
+            <h5 className="card-header">{usuarioId > 0 ? 'Editar Usuário' : 'Cadastrar Usuário'}</h5>
             <div className="card-body">
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3">
@@ -167,7 +141,7 @@ function FormUser({ onSalvarUsuario, onCancelar, usuarioEditando, usuarioEditand
                     <Button variant='success' type='submit' className="m-2">
                         <i className="bi bi-check-lg"> Salvar</i>
                     </Button>
-                    <Button variant='secondary' type='button' onClick={() => {limparFormulario(); onCancelar();}}>
+                    <Button variant='secondary' type='button' onClick={() => {limparFormulario(); /*onCancelar();*/}}>
                         Cancelar
                     </Button>
                 </Form>
@@ -175,5 +149,35 @@ function FormUser({ onSalvarUsuario, onCancelar, usuarioEditando, usuarioEditand
         </div>
     )
 }
+
+// Validar as propiedades
+FormUser.propTypes = {
+    usuarioId: PropTypes.number.isRequired, // 'usuarioId' deve ser um numero e requerido
+};
+
+// Definindo o esquema de validação com yup
+const schema = yup.object().shape({
+    nome: yup.string()
+        .required("O nome é obrigatório."),
+    cpf: yup.string()
+        .required("O CPF é obrigatório.")
+        .test("valid-cpf", "CPF inválido.", value => cpf.isValid(value)),
+    dataNascimento: yup.date()
+        .nullable()
+        .required("A data de nascimento é obrigatória.")
+        .max(new Date(), "Data de nascimento não pode ser no futuro."),
+    endereco: yup.string()
+        .required("O endereço é obrigatório."),
+    cep: yup.string()
+        .required("O CEP é obrigatório.")
+        .matches(/^\d{5}-\d{3}$/, "CEP inválido. Formato esperado: 12345-678"),
+    telefone: yup.string()
+        .required("O telefone é obrigatório.")
+        .matches(/^\(\d{2}\)\s\d{4,5}-\d{4}$/, "Telefone inválido. Formato esperado: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"),
+    email: yup.string()
+        .required("O e-mail é obrigatório.").email("E-mail inválido."),
+    tipoUsuario: yup.string()
+        .required('Tipo de usuário é obrigatório')       
+});
 
 export default FormUser;

@@ -1,25 +1,6 @@
-.FormLivros{    
-    
-    width: 900px;
-    margin: auto;
-    margin-top: 30px;
-    border-radius: 10px;
+.FormLivros .card,
+.FormLivros .table{
     box-shadow: 0px 0px 10px 0px black;
-    padding: 20px;   
-    height: 750px;
-    margin-left: 400px;
-  
-   
-   
-}
-.lista{
-    width: 1200px;
-    margin: auto;
-    margin-top: 30px;
-    border-radius: 10px;
-    padding: 20px;  
-    box-shadow: 0px 0px 10px 0px black;
-
- 
-
+    width: 80%;
+    justify-self: center;
 }
