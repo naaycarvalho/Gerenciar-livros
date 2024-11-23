@@ -1,0 +1,13 @@
+CREATE SCHEMA `livros` ;
+
+CREATE TABLE usuarios ( 
+	id INT AUTO_INCREMENT PRIMARY KEY, 
+	nome VARCHAR(255) NOT NULL, 
+	cpf VARCHAR(14) NOT NULL UNIQUE, 
+	data_nascimento DATE NOT NULL, 
+	endereco VARCHAR(255) NOT NULL, 
+	cep VARCHAR(10) NOT NULL, 
+	telefone VARCHAR(15) NOT NULL, 
+	email VARCHAR(255) NOT NULL, 
+	tipo_usuario VARCHAR(100) NOT NULL
+);

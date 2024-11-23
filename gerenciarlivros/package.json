@@ -9,9 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "jsx": {
-    "runtime": "automatic"
-  },
   "dependencies": {
     "bootstrap": "^5.3.3",
     "cpf-cnpj-validator": "^1.0.3",
