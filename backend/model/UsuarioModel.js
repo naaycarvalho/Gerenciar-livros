@@ -114,11 +114,12 @@ class UsuarioModel {
         const dao = new UsuarioDAO();
 
         const usuario = new UsuarioModel(
-            null,
+            0,
             usuarioData.nome,
             usuarioData.cpf,
             usuarioData.dataNascimento,
             usuarioData.endereco,
+            usuarioData.cep,
             usuarioData.telefone,
             usuarioData.email,
             usuarioData.tipoUsuario

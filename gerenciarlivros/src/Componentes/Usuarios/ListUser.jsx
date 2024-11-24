@@ -1,7 +1,21 @@
 import { Table, Button } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import UsuarioService from '../../services/UsuarioService';
 
-function ListUser({ usuarios, onEditarUsuario, onExcluirUsuario }){
+const usuarioService = new UsuarioService();
+
+function ListUser({ onEditarUsuario, onExcluirUsuario }){
+    const [usuarios, setUsuarios] = useState([]);
+
+    useEffect(() => {
+        usuarioService.obterTodosUsuarios().then((response) => {
+            setUsuarios(response.data)
+        }).catch((erro) => {
+            console.error('Erro ao buscar o usuário:', erro);
+        });
+    });
+
     return (
         <Table striped bordered hover>
             <thead>
@@ -22,7 +36,7 @@ function ListUser({ usuarios, onEditarUsuario, onExcluirUsuario }){
                         <tr key={usuario.id}>
                             <td>{usuario.nome}</td>
                             <td>{usuario.cpf}</td>
-                            <td>{usuario.dataNascimento}</td>
+                            <td>{formatador.format(new Date(usuario.dataNascimento))}</td>
                             <td>{usuario.email}</td>
                             <td>{usuario.telefone}</td>
                             <td>{tipoUsuarioDescricao[usuario.tipoUsuario]}</td>
@@ -45,10 +59,16 @@ function ListUser({ usuarios, onEditarUsuario, onExcluirUsuario }){
 
 // Validar as propiedades
 ListUser.propTypes = {
-    usuarios: PropTypes.array.isRequired,
     onEditarUsuario: PropTypes.func.isRequired,
-    onExcluirUsuario: PropTypes.func.isRequired, // 'usuarioId' deve ser um numero e requerido
+    onExcluirUsuario: PropTypes.func.isRequired,
 };
+
+// Criar um objeto de formatação para data
+const formatador = new Intl.DateTimeFormat('pt-BR', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+});
 
 // Mapeamento entre o valor e a descrição do tipo de usuário
 const tipoUsuarioDescricao = {

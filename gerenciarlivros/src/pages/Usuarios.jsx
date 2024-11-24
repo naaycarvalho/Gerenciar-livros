@@ -3,58 +3,50 @@ import Stack from 'react-bootstrap/Stack';
 import FormUser from '../Componentes/Usuarios/FormUser';
 import ListUser from '../Componentes/Usuarios/ListUser';
 import './usuarios.css';
-import ClienteService from '../services/ClienteService';
+import UsuarioService from '../services/UsuarioService';
 
-const clienteService = new ClienteService();
+const usuarioService = new UsuarioService();
 
 function Usuarios() {
-  const [usuarios, setUsuarios] = useState([]);
   const [usuarioId, setUsuarioId] = useState(0);
 
-  // Carregar os usuários do banco de dados
-  const carregaUsuarios = async () =>{
-    const response = await clienteService.obterTodosUsuarios();
-    setUsuarios(response.data);
-  }
-
   useEffect(() => {
-    carregaUsuarios();
-  });
+    console.log('usuarioId',usuarioId)
+  }, [usuarioId]);
 
   // Função para adicionar um novo usuário
-  const salvarUsuario = (usuario, index) => {
-
-    let novosUsuarios;
-    if (index !== undefined && index !== null) {
-      // Se o índice for definido, significa que estamos editando um usuário
-      novosUsuarios = [...usuarios];
-      novosUsuarios[index] = usuario;
+  const salvarUsuario = (usuario) => {
+    if (usuarioId > 0) {
+      usuarioService.atualizarUsuario(usuarioId, usuario).then((response) => {
+        console.log(response.data);
+      }).catch((erro) => {
+        console.error('Erro ao cadastrar o usuário:', erro);
+      });
     } else {
-      // Caso contrário, é um novo usuário
-      novosUsuarios = [...usuarios, usuario];
+      usuarioService.cadastrarUsuario(usuario).then((response) => {
+        console.log(response.data);
+      }).catch((erro) => {
+        console.error('Erro ao cadastrar o usuário:', erro);
+      });
     }
-    setUsuarios(novosUsuarios);
-    localStorage.setItem('usuarios', JSON.stringify(novosUsuarios)); 
-    console.log(novosUsuarios);
     cancelar();
   };
 
   // Função para iniciar a edição de um usuário
   const editarUsuario = (id) => {
-    console.log('chegou')
     setUsuarioId(id); 
   };
 
-
-// Função para excluir um usuário
-  const excluirUsuario = (index) => {
+  // Função para excluir um usuário
+  const excluirUsuario = (id) => {
     const confirmar = window.confirm("Tem certeza que deseja excluir o usuário?");
 
     if (confirmar) {
-        const usuariosAtualizados = [...usuarios];
-        usuariosAtualizados.splice(index, 1);
-        setUsuarios(usuariosAtualizados);
-        localStorage.setItem('usuarios', JSON.stringify(usuariosAtualizados));
+      usuarioService.deletarUsuario(id).then((response) => {
+        console.log(response.message);
+      }).catch((erro) => {
+        console.error('Erro ao excluir o usuário:', erro);
+      });
     }
   };
 
@@ -68,7 +60,7 @@ function Usuarios() {
         <FormUser usuarioId={usuarioId} onSalvarUsuario={salvarUsuario} onCancelar={cancelar} />
       </div>
       <div className="p-2">
-        <ListUser usuarios={usuarios} onEditarUsuario={editarUsuario} onExcluirUsuario={excluirUsuario} />
+        <ListUser onEditarUsuario={editarUsuario} onExcluirUsuario={excluirUsuario} />
       </div>
     </Stack>
   )

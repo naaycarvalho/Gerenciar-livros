@@ -5,11 +5,11 @@ import * as yup from 'yup';
 import InputMask from 'react-input-mask';
 import '../../pages/usuarios.css';
 import PropTypes from 'prop-types';
-import ClienteService from '../../services/ClienteService';
+import UsuarioService from '../../services/UsuarioService';
 
-const clienteService = new ClienteService();
+const usuarioService = new UsuarioService();
 
-const FormUser = ({ usuarioId }) => {
+const FormUser = ({ usuarioId, onSalvarUsuario, onCancelar }) => {
     const [nome, setNome] = useState('');
     const [cpf, setCpf] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
@@ -22,20 +22,19 @@ const FormUser = ({ usuarioId }) => {
 
     useEffect(() => {
         if (usuarioId > 0) {
-            clienteService.obterUsuarioPorId(usuarioId).then((response) => {
+            usuarioService.obterUsuarioPorId(usuarioId).then((response) => {
                 carregaFormulario(response.data);
             }).catch((erro) => {
                 console.error('Erro ao buscar o usuário:', erro);
             });
         }
-    });
+    }, [usuarioId]);
 
-// Carregar os campos do formulário
+    // Carregar os campos do formulário
     const carregaFormulario = (usuario) => {
-        //console.log()
         setNome(usuario ? usuario.nome : '');
         setCpf(usuario ? usuario.cpf: '');
-        setDataNascimento(usuario ? usuario.dataNascimento : '');
+        setDataNascimento(usuario ? usuario.dataNascimento.split('T')[0] : '');
         setEndereco(usuario ? usuario.endereco : '');
         setCep(usuario ? usuario.cep : '');
         setTelefone(usuario ? usuario.telefone : '');
@@ -46,6 +45,7 @@ const FormUser = ({ usuarioId }) => {
     const limparFormulario = () => {
         carregaFormulario(null);
         setErrors({});
+        onCancelar();
     };
 
     const handleSubmit = async (e) => {
@@ -60,7 +60,7 @@ const FormUser = ({ usuarioId }) => {
         schema
             .validate(userData, { abortEarly: false })
             .then(() => {
-                // onSalvarUsuario(userData, usuarioEditandoIndex);
+                onSalvarUsuario(userData);
                 limparFormulario();
             })
             .catch((err) => {
@@ -141,7 +141,7 @@ const FormUser = ({ usuarioId }) => {
                     <Button variant='success' type='submit' className="m-2">
                         <i className="bi bi-check-lg"> Salvar</i>
                     </Button>
-                    <Button variant='secondary' type='button' onClick={() => {limparFormulario(); /*onCancelar();*/}}>
+                    <Button variant='secondary' type='button' onClick={() => {limparFormulario();}}>
                         Cancelar
                     </Button>
                 </Form>
@@ -153,6 +153,8 @@ const FormUser = ({ usuarioId }) => {
 // Validar as propiedades
 FormUser.propTypes = {
     usuarioId: PropTypes.number.isRequired, // 'usuarioId' deve ser um numero e requerido
+    onSalvarUsuario: PropTypes.func.isRequired, // 'onSalvarUsuario' deve ser um função e requerido
+    onCancelar: PropTypes.func.isRequired, // 'onCancelar' deve ser um função e requerido
 };
 
 // Definindo o esquema de validação com yup
