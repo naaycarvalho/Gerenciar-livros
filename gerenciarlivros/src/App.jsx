@@ -5,7 +5,7 @@ import Header from './Componentes/Header/header';
 import Usuarios from './pages/Usuarios';
 import FornecedorForm  from './pages/gerenciarfornecedores';
 import FormLivros from './pages/gerenciarlivros';
-import Home from './pages/Home';
+import Home from './pages/home';
 import "./App.css";
 
 function App() {
