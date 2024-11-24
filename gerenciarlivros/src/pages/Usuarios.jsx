@@ -74,7 +74,7 @@ function Usuarios() {
     const confirmar = window.confirm("Tem certeza que deseja excluir o usuário?");
 
     if (confirmar) {
-      usuarioService.deletarUsuario(id).then((response) => {
+      usuarioService.deletarUsuario(id).then(() => {
         handleShowAlert('success', 'Usuário excluido com sucesso.');
       }).catch((erro) => {
         console.error('Erro ao excluir o usuário:', erro);
