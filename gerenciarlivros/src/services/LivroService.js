@@ -1,5 +1,4 @@
 const API_BASE_URL = 'http://localhost:3000'
-
 class LivroService {
 
     async obterTodosLivros() {
@@ -9,8 +8,8 @@ class LivroService {
             }
         });
 
-        if(!response.ok){
-            console.log('Erro ao obter todos os livros.');
+        if (!response.ok) {
+            console.error('Erro ao obter todos os livros.', response.status, response.statusText);
             return [];
         }
 
@@ -26,7 +25,7 @@ class LivroService {
         });
 
         if (!response.ok) {
-            console.log(`Erro ao obter livro com id: ${id}.`);
+            console.error(`Erro ao obter livro com id: ${id}.`, response.status, response.statusText);
             return null;
         }
 
@@ -35,6 +34,8 @@ class LivroService {
     }
 
     async cadastrarLivro(livro) {
+        console.log("Dados do livro:", livro);  // Log para depuração
+
         const response = await fetch(`${API_BASE_URL}/livro`, {
             method: 'POST',
             headers: {
@@ -44,7 +45,7 @@ class LivroService {
         });
 
         if (!response.ok) {
-            console.log('Erro ao cadastrar livro.');
+            console.error('Erro ao cadastrar livro.', response.status, response.statusText);
             return null;
         }
 
@@ -62,7 +63,7 @@ class LivroService {
         });
 
         if (!response.ok) {
-            console.log(`Erro ao atualizar livro com id: ${id}.`);
+            console.error(`Erro ao atualizar livro com id: ${id}.`, response.status, response.statusText);
             return null;
         }
 
@@ -79,7 +80,7 @@ class LivroService {
         });
 
         if (!response.ok) {
-            console.log(`Erro ao deletar livro com id: ${id}.`);
+            console.error(`Erro ao deletar livro com id: ${id}.`, response.status, response.statusText);
             return false;
         }
 

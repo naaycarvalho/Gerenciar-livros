@@ -7,6 +7,7 @@ import LivroService from '../services/LivroService';
 
 const livroService = new LivroService();
 
+
 function FormLivros() {
   const [Livro, setLivro] = useState({
     Titulo: '',
@@ -26,16 +27,18 @@ function FormLivros() {
   const [listaLivros, setListaLivros] = useState([]);
   const [indexEditando, setIndexEditando] = useState(null);
   const [validated, setValidated] = useState(false);
+  
 
   useEffect(() => {
-    // Carregar livros do backend
-    const carregarLivros = async () => {
-      const livros = await livroService.obterTodosLivros();
-      setListaLivros(livros);
-    };
-    carregarLivros();
+    livroService.obterTodosLivros()
+      .then((response) => {
+        setListaLivros(response.data || []);
+      })
+      .catch((erro) => {
+        console.error('Erro ao buscar fornecedores:', erro);
+      });
   }, []);
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLivro((prevLivro) => ({
@@ -45,43 +48,43 @@ function FormLivros() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita o comportamento padrão de envio do formulário
+    
+    // Validação do formulário
+    if (Form.checkValidity() === false) {
+      e.stopPropagation(); // Impede o envio do formulário se a validade falhar
+      setValidated(true); // Marca o formulário como validado
+      return;
+    }
   
-    const camposObrigatorios = ['Titulo', 'Autor', 'Editora', 'Ano', 'ISBN', 'NumeroDePaginas', 'Categoria', 'Tombo', 'DataDeCadastro'];
-    const formularioValido = camposObrigatorios.every((campo) => Livro[campo]?.trim() !== '');
-  
-    setValidated(true);
-  
-    if (!formularioValido) return;
+    setValidated(true); // Marca o formulário como validado
   
     try {
-      if (indexEditando === null) {
-        // Cadastro de novo livro
-        const novoLivro = await livroService.cadastrarLivro(Livro);
-        if (novoLivro) {
-          setListaLivros((prev) => [...prev, novoLivro]); // Atualiza a lista de livros com o novo livro
-        }
+      if (indexEditando !== null) {
+        // Atualizar um livro existente
+        const livroAtualizado = await livroService.atualizarLivro(listaLivros[indexEditando].id, Livro);
+        const updatedLivros = [...listaLivros];
+        updatedLivros[indexEditando] = livroAtualizado.data; // Atualiza o livro na lista
+        setListaLivros(updatedLivros);
+        setIndexEditando(null); // Limpa o índice de edição após a atualização
       } else {
-        // Atualizar livro existente
-        const id = listaLivros[indexEditando].id; // Presume que cada livro tem um ID único
-        const livroAtualizado = await livroService.atualizarLivro(id, Livro);
-        if (livroAtualizado) {
-          setListaLivros((prev) => {
-            const novaLista = [...prev];
-            novaLista[indexEditando] = livroAtualizado; // Substitui o livro atualizado
-            return novaLista;
-          });
-        }
-        setIndexEditando(null);
+        // Cadastrar um novo livro
+        const livroCadastrado = await livroService.cadastrarLivro(Livro);
+        setListaLivros((prevLista) => [...prevLista, livroCadastrado.data]); // Adiciona o livro à lista
       }
   
-      resetarFormulario();
-    } catch (error) {
-      console.error("Erro ao salvar o livro:", error);
-      alert("Ocorreu um erro ao salvar o livro. Tente novamente.");
+      // Recarregar a lista de livros atualizada após qualquer operação
+      const livrosAtualizados = await livroService.obterTodosLivros();
+      setListaLivros(livrosAtualizados);
+  
+      resetarFormulario(); // Limpa o formulário após o envio
+    } catch (erro) {
+      console.error('Erro ao salvar ou atualizar o livro:', erro);
+      alert('Ocorreu um erro ao salvar o livro. Tente novamente.'); // Exibe um alerta para o usuário
     }
   };
   
+  // Função para resetar o formulário
   const resetarFormulario = () => {
     setLivro({
       Titulo: '',
@@ -90,16 +93,42 @@ function FormLivros() {
       Ano: '',
       ISBN: '',
       NumeroDePaginas: '',
-      Genero: 'Romance',
-      Estado: 'Novo',
+      Genero: '',
+      Estado: '',
       Tombo: '',
       DataDeCadastro: '',
       Observacoes: '',
       Categoria: ''
     });
-    setValidated(false);
+    setValidated(false); // Resetando a validação
   };
   
+
+ 
+  // Função para editar um livro
+  const handleEdit = (index) => {
+    const livro = listaLivros[index];
+    setLivro(livro);
+    setIndexEditando(index);
+  };
+
+  // Função para excluir um livro
+  const handleDelete = (id) => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir este fornecedor?");
+    if (confirmar) {
+      livroService
+        .deletarFornecedor(id) // Fazendo a requisição para o backend
+        .then(() => {
+          // Atualizando o estado local após a exclusão
+          const livrosAtualizados = listaLivros.filter((Livro) => Livro.id !== id);
+          setListaLivros(livrosAtualizados);
+        })
+        .catch((erro) => {
+          console.error("Erro ao excluir fornecedor:", erro);
+        });
+    }
+  };
+
 
     return (
         <Stack gap={2} className='FormLivros'>
