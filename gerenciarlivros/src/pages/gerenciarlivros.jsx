@@ -1,4 +1,4 @@
-import { Form, Card, Row, Col, Button, Table, InputGroup} from 'react-bootstrap';
+import { Form, Card, Row, Col, Button, Table, InputGroup } from 'react-bootstrap';
 import Stack from 'react-bootstrap/Stack';
 import '../Componentes/FormLivros/formlivros.css';
 import { useState, useEffect } from 'react';
@@ -28,8 +28,12 @@ function FormLivros() {
   const [validated, setValidated] = useState(false);
 
   useEffect(() => {
-    const livrosArmazenados = JSON.parse(localStorage.getItem('Livro')) || [];
-    setListaLivros(livrosArmazenados);
+    // Carregar livros do backend
+    const carregarLivros = async () => {
+      const livros = await livroService.obterTodosLivros();
+      setListaLivros(livros);
+    };
+    carregarLivros();
   }, []);
 
   const handleChange = (e) => {
@@ -40,30 +44,45 @@ function FormLivros() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Verificar se todos os campos obrigatórios estão preenchidos
+  
     const camposObrigatorios = ['Titulo', 'Autor', 'Editora', 'Ano', 'ISBN', 'NumeroDePaginas', 'Categoria', 'Tombo', 'DataDeCadastro'];
     const formularioValido = camposObrigatorios.every((campo) => Livro[campo]?.trim() !== '');
-
+  
     setValidated(true);
-
-    if (!formularioValido) {
-      return; // Não submeter se algum campo obrigatório estiver vazio
+  
+    if (!formularioValido) return;
+  
+    try {
+      if (indexEditando === null) {
+        // Cadastro de novo livro
+        const novoLivro = await livroService.cadastrarLivro(Livro);
+        if (novoLivro) {
+          setListaLivros((prev) => [...prev, novoLivro]); // Atualiza a lista de livros com o novo livro
+        }
+      } else {
+        // Atualizar livro existente
+        const id = listaLivros[indexEditando].id; // Presume que cada livro tem um ID único
+        const livroAtualizado = await livroService.atualizarLivro(id, Livro);
+        if (livroAtualizado) {
+          setListaLivros((prev) => {
+            const novaLista = [...prev];
+            novaLista[indexEditando] = livroAtualizado; // Substitui o livro atualizado
+            return novaLista;
+          });
+        }
+        setIndexEditando(null);
+      }
+  
+      resetarFormulario();
+    } catch (error) {
+      console.error("Erro ao salvar o livro:", error);
+      alert("Ocorreu um erro ao salvar o livro. Tente novamente.");
     }
-
-    if (indexEditando === null) {
-      const novaListaLivros = [...listaLivros, Livro];
-      setListaLivros(novaListaLivros);
-      localStorage.setItem('Livro', JSON.stringify(novaListaLivros));
-    } else {
-      const novaListaLivros = [...listaLivros];
-      novaListaLivros[indexEditando] = Livro;
-      setListaLivros(novaListaLivros);
-      localStorage.setItem('Livro', JSON.stringify(novaListaLivros));
-      setIndexEditando(null);
-    }
-
+  };
+  
+  const resetarFormulario = () => {
     setLivro({
       Titulo: '',
       Autor: '',
@@ -78,23 +97,9 @@ function FormLivros() {
       Observacoes: '',
       Categoria: ''
     });
-    setValidated(false); // Resetar validação
+    setValidated(false);
   };
-
-  const handleDelete = (index) => {
-    if (window.confirm("Tem certeza que deseja excluir este livro?")) {
-      const novaListaLivros = listaLivros.filter((_, i) => i !== index);
-      setListaLivros(novaListaLivros);
-      localStorage.setItem('Livro', JSON.stringify(novaListaLivros));
-    }
-  };
-
-  const handleEdit = (index) => {
-    const livroParaEditar = listaLivros[index];
-    setLivro(livroParaEditar);
-    setIndexEditando(index);
-  };
-
+  
 
     return (
         <Stack gap={2} className='FormLivros'>
@@ -317,7 +322,8 @@ function FormLivros() {
                             <Button variant="success" type='submit'  className="m-2">
                                 <i className="bi bi-check-lg">{indexEditando === null ? 'Salvar' : 'Salvar Alterações'} </i>
                             </Button>
-                            <Button variant="secondary" type='button'>Cancelar</Button>
+                            <Button variant="secondary" type="button" onClick={resetarFormulario}>Cancelar</Button>
+
                         </Card.Body>
                     </Card>
                 </Form>
