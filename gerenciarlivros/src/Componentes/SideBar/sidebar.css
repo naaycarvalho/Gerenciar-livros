@@ -5,16 +5,22 @@
     top: 0;
     height: 100%;
     width: 280px;
+
+    
+  
+
 }
 
 .nav-link {
     transition: all 0.3s ease;
     font-size: 1rem;
+
   }
   
   .nav-link:hover {
     font-size: 1.05rem; 
     font-weight: 600;
+
   }
   
 .botao {
