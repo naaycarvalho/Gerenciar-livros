@@ -1,31 +1,46 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
+import FornecedorService from "../../services/FornecedorService";
 
-function FornecedorList() {
-  const [fornecedor, setFornecedor] = useState([]);
+const fornecedorService = new FornecedorService();
 
+const FornecedorList = () => {
+  // Definindo o estado para armazenar os fornecedores
+  const [fornecedores, setFornecedores] = useState([]);
+
+  // Obtendo os fornecedores ao montar o componente
   useEffect(() => {
-    const storedFornecedor = JSON.parse(localStorage.getItem('Fornecedor')) || [];
-    setFornecedor(storedFornecedor);
-  }, []);
+    fornecedorService
+      .obterTodosFornecedores()
+      .then((response) => {
+        setFornecedores(response.data); // Atualiza a lista de fornecedores
+      })
+      .catch((erro) => {
+        console.error("Erro ao buscar os fornecedores:", erro);
+      });
+  }, []); // A dependência vazia faz com que esse efeito só seja chamado uma vez, ao montar o componente
 
-  const handleDelete = (index) => {
-
+  // Função para excluir um fornecedor
+  const handleDelete = (id) => {
     const confirmar = window.confirm("Tem certeza que deseja excluir este fornecedor?");
     if (confirmar) {
-      const fornecedoresAtualizados = [...fornecedor];
-      fornecedoresAtualizados.splice(index, 1);
-
-
-      setFornecedor(fornecedoresAtualizados);
-      localStorage.setItem('Fornecedor', JSON.stringify(fornecedoresAtualizados));
+      fornecedorService
+        .deletarFornecedor(id) // Fazendo a requisição para o backend
+        .then(() => {
+          // Atualizando o estado local após a exclusão
+          const fornecedoresAtualizados = fornecedores.filter((fornecedor) => fornecedor.id !== id);
+          setFornecedores(fornecedoresAtualizados);
+        })
+        .catch((erro) => {
+          console.error("Erro ao excluir fornecedor:", erro);
+        });
     }
   };
 
   return (
     <>
       <h2>Lista de Fornecedores</h2>
-      {fornecedor.length === 0 ? (
+      {fornecedores.length === 0 ? (
         <p>Nenhum fornecedor cadastrado.</p>
       ) : (
         <Table striped bordered hover>
@@ -45,8 +60,8 @@ function FornecedorList() {
             </tr>
           </thead>
           <tbody>
-            {fornecedor.map((item, index) => (
-              <tr key={index}>
+            {fornecedores.map((item, index) => (
+              <tr key={item.id}> {/* Usar 'id' para chave única, não o índice */}
                 <td>{index + 1}</td>
                 <td>{item.razaoSocial}</td>
                 <td>{item.cnpj}</td>
@@ -58,10 +73,7 @@ function FornecedorList() {
                 <td>{item.agencia}</td>
                 <td>{item.conta}</td>
                 <td>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(index)}
-                  >
+                  <Button variant="danger" onClick={() => handleDelete(item.id)}>
                     Excluir
                   </Button>
                 </td>
@@ -72,6 +84,6 @@ function FornecedorList() {
       )}
     </>
   );
-}
+};
 
 export default FornecedorList;

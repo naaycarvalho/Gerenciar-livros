@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { Button, Form, Row, Col, Table } from "react-bootstrap";
 import InputMask from "react-input-mask";
 import Stack from "react-bootstrap/Stack";
+import FornecedorService from "../services/FornecedorService";
+
+
+const fornecedorService = new FornecedorService();
 
 function FornecedorForm() {
   const [fornecedor, setFornecedor] = useState({
@@ -18,15 +22,22 @@ function FornecedorForm() {
 
   const [fornecedores, setFornecedores] = useState([]);
   const [validated, setValidated] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null); // Novo estado para controle de edição
+  const [editingIndex, setEditingIndex] = useState(null);
 
-  // Carregar os fornecedores armazenados no localStorage
+
+
+
   useEffect(() => {
-    const storedFornecedores = JSON.parse(localStorage.getItem("Fornecedor")) || [];
-    setFornecedores(storedFornecedores);
+    fornecedorService.obterTodosFornecedores()
+      .then((response) => {
+        setFornecedores(response.data || []);
+      })
+      .catch((erro) => {
+        console.error('Erro ao buscar fornecedores:', erro);
+      });
   }, []);
+  
 
-  // Atualizar o estado do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFornecedor((prevFornecedor) => ({
@@ -35,34 +46,43 @@ function FornecedorForm() {
     }));
   };
 
-  // Enviar o formulário
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-
+  
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
       return;
     }
-
+  
     setValidated(true);
-
+  
     if (editingIndex !== null) {
-      // Atualizar fornecedor existente
-      const updatedFornecedores = [...fornecedores];
-      updatedFornecedores[editingIndex] = fornecedor;
-      setFornecedores(updatedFornecedores);
-      localStorage.setItem("Fornecedor", JSON.stringify(updatedFornecedores));
-      setEditingIndex(null);
-    } else {
-      // Adicionar novo fornecedor
-      const updatedFornecedores = [...fornecedores, fornecedor];
-      setFornecedores(updatedFornecedores);
-      localStorage.setItem("Fornecedor", JSON.stringify(updatedFornecedores));
-    }
 
-    // Limpar o formulário
+      fornecedorService.atualizarFornecedor(fornecedores[editingIndex].id, fornecedor)
+        .then((response) => {
+          const updatedFornecedores = [...fornecedores];
+          updatedFornecedores[editingIndex] = response.data;
+          setFornecedores(updatedFornecedores);
+          setEditingIndex(null);
+        })
+        .catch((erro) => {
+          console.error('Erro ao atualizar fornecedor:', erro);
+        });
+    } else {
+
+      fornecedorService.cadastrarFornecedor(fornecedor)
+        .then((response) => {
+          setFornecedores([...fornecedores, response.data]);
+        })
+        .catch((erro) => {
+          console.error('Erro ao cadastrar fornecedor:', erro);
+        });
+    }
+  
+ 
     setFornecedor({
       razaoSocial: "",
       cnpj: "",
@@ -76,15 +96,23 @@ function FornecedorForm() {
     });
     setValidated(false);
   };
+  
+  
 
-  // Excluir fornecedor
   const handleDelete = (index) => {
     if (window.confirm("Tem certeza que deseja excluir este fornecedor?")) {
-      const updatedFornecedores = fornecedores.filter((_, i) => i !== index);
-      setFornecedores(updatedFornecedores);
-      localStorage.setItem("Fornecedor", JSON.stringify(updatedFornecedores));
+      const fornecedorId = fornecedores[index].id;
+      fornecedorService.deletarFornecedor(fornecedorId)
+        .then(() => {
+          const updatedFornecedores = fornecedores.filter((_, i) => i !== index);
+          setFornecedores(updatedFornecedores);
+        })
+        .catch((erro) => {
+          console.error('Erro ao excluir fornecedor:', erro);
+        });
     }
   };
+  
 
   // Editar fornecedor
   const handleEdit = (index) => {
@@ -267,6 +295,8 @@ function FornecedorForm() {
             </div>
           </div>
         </div>
+
+
         <div className="p-2">
           <Table striped bordered hover>
             <thead>
