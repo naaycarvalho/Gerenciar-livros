@@ -51,7 +51,7 @@ class LivrosController {
                 const { id } = req.params;
                 const livro = await LivrosModel.buscarPorId(id);
         
-                if (!livro) { // Verifica se o livro foi encontrado
+                if (!livro) { 
                     return res.status(404).json({
                         message: 'Livro não encontrado.'
                     });
@@ -59,7 +59,7 @@ class LivrosController {
         
                 res.status(200).json({
                     message: 'Livro encontrado.',
-                    data: livro.toJSON() // Converte os dados do modelo para JSON
+                    data: livro.toJSON() 
                 });
             } catch (error) {
                 console.error('Erro ao buscar livro por ID:', error);
@@ -97,21 +97,25 @@ class LivrosController {
 
 
         //Método atualizar livro por id
-        async atualizar(req, res){
+        async atualizar(req, res) {
             try {
                 const { id } = req.params;
-                const { Titulo, Autor, Editora, Ano, ISBN, NumeroDePaginas, Genero, Estado, Tombo, DataDeCadastro, Observacoes, Categoria} = req.body;
-                const livroData = { Titulo, Autor, Editora, Ano, ISBN, NumeroDePaginas, Genero, Estado, Tombo, DataDeCadastro, Observacoes, Categoria};
+                const livroData = req.body; 
+            
                 const livro = await LivrosModel.buscarPorId(id);
-                if(!livro){
+                if (!livro) {
                     return res.status(404).json({
-                        message: 'Livro nao encontrado.'
+                        message: 'Livro não encontrado.'
                     });
                 }
+        
+                
                 await livro.atualizar(livroData);
+                const livroAtualizado = await LivrosModel.buscarPorId(id); 
+        
                 res.status(200).json({
                     message: 'Livro atualizado com sucesso.',
-                    data: livro.toJSON()
+                    data: livroAtualizado.toJSON()
                 });
             } catch (error) {
                 console.error('Erro ao atualizar livro:', error);
@@ -121,6 +125,7 @@ class LivrosController {
                 });
             }
         }
+        
     }
 
 module.exports = new  LivrosController(); 

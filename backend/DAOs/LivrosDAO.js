@@ -18,10 +18,15 @@ class LivrosDAO {
     }
 
     async buscarPorId(id) {
-        const query = 'SELECT * FROM livros WHERE id = ?';
+        const query = `
+            SELECT id, titulo, autor, editora, ano, isbn, numero_de_paginas, genero, estado, tombo, data_cadastro, observacoes, categoria
+            FROM livros
+            WHERE id = ?
+        `;
         const [rows] = await db.execute(query, [id]);
-        return rows[0]; // Retorna o primeiro resultado
+        return rows [0]; // Retorna o primeiro resultado encontrado
     }
+    
 
     async buscarPorTermo(termo) {
         if (!termo || termo.trim() === '') {

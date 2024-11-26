@@ -154,6 +154,7 @@ class LivrosModel {
             Observacoes: this.#Observacoes
         };
     }
+    
 
 
     static async criar(livroData) {
