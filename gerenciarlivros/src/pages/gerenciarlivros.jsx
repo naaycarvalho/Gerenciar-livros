@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import LivroService from '../services/LivroService';
 
-const livroService = new LivroService();
 
+const livroService = new LivroService();
 
 function FormLivros() {
   const [Livro, setLivro] = useState({
@@ -27,18 +27,21 @@ function FormLivros() {
   const [listaLivros, setListaLivros] = useState([]);
   const [indexEditando, setIndexEditando] = useState(null);
   const [validated, setValidated] = useState(false);
-  
 
+  // Carregar livros na inicialização
   useEffect(() => {
-    livroService.obterTodosLivros()
-      .then((response) => {
-        setListaLivros(response.data || []);
-      })
-      .catch((erro) => {
-        console.error('Erro ao buscar fornecedores:', erro);
-      });
+    carregarLivros();
   }, []);
-  
+
+  const carregarLivros = async () => {
+    try {
+      const response = await livroService.obterTodosLivros();
+      setListaLivros(response.data || []);
+    } catch (erro) {
+      console.error('Erro ao carregar livros:', erro);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLivro((prevLivro) => ({
@@ -48,43 +51,38 @@ function FormLivros() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Evita o comportamento padrão de envio do formulário
-    
-    // Validação do formulário
-    if (Form.checkValidity() === false) {
-      e.stopPropagation(); // Impede o envio do formulário se a validade falhar
-      setValidated(true); // Marca o formulário como validado
+    e.preventDefault();
+    const form = e.currentTarget;
+  
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+      setValidated(true);
       return;
     }
   
-    setValidated(true); // Marca o formulário como validado
+    setValidated(true);
   
     try {
       if (indexEditando !== null) {
-        // Atualizar um livro existente
+        // Atualizar livro existente
         const livroAtualizado = await livroService.atualizarLivro(listaLivros[indexEditando].id, Livro);
-        const updatedLivros = [...listaLivros];
-        updatedLivros[indexEditando] = livroAtualizado.data; // Atualiza o livro na lista
-        setListaLivros(updatedLivros);
-        setIndexEditando(null); // Limpa o índice de edição após a atualização
+        const livrosAtualizados = [...listaLivros];
+        livrosAtualizados[indexEditando] = livroAtualizado.data;
+        setListaLivros(livrosAtualizados);
+        setIndexEditando(null);
       } else {
-        // Cadastrar um novo livro
+        // Cadastrar novo livro
         const livroCadastrado = await livroService.cadastrarLivro(Livro);
-        setListaLivros((prevLista) => [...prevLista, livroCadastrado.data]); // Adiciona o livro à lista
+        setListaLivros((prevLista) => [...prevLista, livroCadastrado.data]);
       }
-  
-      // Recarregar a lista de livros atualizada após qualquer operação
-      const livrosAtualizados = await livroService.obterTodosLivros();
-      setListaLivros(livrosAtualizados);
-  
-      resetarFormulario(); // Limpa o formulário após o envio
+      resetarFormulario(); // Garante que o formulário é resetado
     } catch (erro) {
-      console.error('Erro ao salvar ou atualizar o livro:', erro);
-      alert('Ocorreu um erro ao salvar o livro. Tente novamente.'); // Exibe um alerta para o usuário
+      console.error('Erro ao salvar livro:', erro);
+      alert('Erro ao salvar livro. Tente novamente.');
     }
   };
   
-  // Função para resetar o formulário
+
   const resetarFormulario = () => {
     setLivro({
       Titulo: '',
@@ -100,32 +98,28 @@ function FormLivros() {
       Observacoes: '',
       Categoria: ''
     });
-    setValidated(false); // Resetando a validação
+    setValidated(false);
+    setIndexEditando(null);
+    ;
   };
-  
 
- 
-  // Função para editar um livro
   const handleEdit = (index) => {
-    const livro = listaLivros[index];
-    setLivro(livro);
+    const livroSelecionado = listaLivros[index];
+    setLivro({ ...livroSelecionado }); // Copia os valores do livro
     setIndexEditando(index);
   };
+  
+  
 
-  // Função para excluir um livro
-  const handleDelete = (id) => {
-    const confirmar = window.confirm("Tem certeza que deseja excluir este fornecedor?");
-    if (confirmar) {
-      livroService
-        .deletarFornecedor(id) // Fazendo a requisição para o backend
-        .then(() => {
-          // Atualizando o estado local após a exclusão
-          const livrosAtualizados = listaLivros.filter((Livro) => Livro.id !== id);
-          setListaLivros(livrosAtualizados);
-        })
-        .catch((erro) => {
-          console.error("Erro ao excluir fornecedor:", erro);
-        });
+  const handleDelete = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir este livro?')) {
+      try {
+        await livroService.deletarLivro(id);
+        setListaLivros((prevLista) => prevLista.filter((livro) => livro.id !== id));
+      } catch (erro) {
+        console.error('Erro ao excluir livro:', erro);
+        alert('Erro ao excluir livro. Tente novamente.');
+      }
     }
   };
 
@@ -380,7 +374,7 @@ function FormLivros() {
                     {(() => {
                         if (listaLivros.length > 0) {
                             return listaLivros.map((livro, index) => (
-                            <tr key={index}>
+                            <tr key={ index || livro.id}>                                
                             <td>{livro.Titulo}</td>
                             <td>{livro.Autor}</td>
                             <td>{livro.Editora}</td>
@@ -395,7 +389,7 @@ function FormLivros() {
                             <td>{livro.Observacoes}</td>
                              <td>
                                 <Button variant="primary" onClick={() => handleEdit(index)} className="m-2">Editar</Button>
-                                <Button variant="danger" onClick={() => handleDelete(index)}>Excluir</Button>
+                                <Button variant="danger" onClick={() => handleDelete(livro.id)}>Excluir</Button>
                             </td>
                             </tr>));
                             } else {
@@ -416,3 +410,6 @@ function FormLivros() {
 }
 
 export default FormLivros;
+
+
+  
