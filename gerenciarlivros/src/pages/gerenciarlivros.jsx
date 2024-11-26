@@ -1,8 +1,11 @@
-import { Form, Card, Row, Col, Button, Table, InputGroup } from 'react-bootstrap';
+import { Form, Card, Row, Col, Button, Table, InputGroup} from 'react-bootstrap';
 import Stack from 'react-bootstrap/Stack';
 import '../Componentes/FormLivros/formlivros.css';
 import { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
+import LivroService from '../services/LivroService';
+
+const livroService = new LivroService();
 
 function FormLivros() {
   const [Livro, setLivro] = useState({
@@ -12,8 +15,8 @@ function FormLivros() {
     Ano: '',
     ISBN: '',
     NumeroDePaginas: '',
-    Genero: 'Romance',
-    Estado: 'Novo',
+    Genero: '',
+    Estado: '',
     Tombo: '',
     DataDeCadastro: '',
     Observacoes: '',
@@ -176,6 +179,7 @@ function FormLivros() {
                                         placeholder="Categoria"
                                         name="Categoria"
                                         value={Livro.Categoria}
+                                        className='form-control'
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Categoria.trim() === ''} 
                                         required />
@@ -215,6 +219,7 @@ function FormLivros() {
                                         name="NumeroDePaginas"
                                         value={Livro.NumeroDePaginas}
                                         onChange={handleChange}
+                                        className='form-control'
                                         isInvalid={validated && Livro.NumeroDePaginas.trim() === ''}
                                         required/>
                                         <Form.Control.Feedback type="invalid">
@@ -230,15 +235,20 @@ function FormLivros() {
                                 name="Genero"
                                 value={Livro.Genero}
                                 onChange={handleChange}
-                                >
-
-                                    <option>Romance</option>
-                                    <option value="1">Fábula</option>
-                                    <option value="2">Drama</option>
-                                    <option value="3">Terror</option>
-                                    <option value="4">Suspense</option>
-                                    <option value="5">Ficção Científica</option>
+                                isInvalid={validated && Livro.Genero.trim() === ''}
+                                required>
+                                
+                                    <option value="">Selecione o gênero do livro</option>
+                                    <option value ="Romance">Romance</option>
+                                    <option value="Fabula">Fábula</option>
+                                    <option value="Drama">Drama</option>
+                                    <option value="Terror">Terror</option>
+                                    <option value="Suspense">Suspense</option>
+                                    <option value="FiccaoCientifica">Ficção Científica</option>
                                 </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    Por favor, selecione o gênero do livro.
+                                </Form.Control.Feedback>
                             </InputGroup>
 
                             <InputGroup className="mb-3">
@@ -246,11 +256,18 @@ function FormLivros() {
                                 <Form.Select 
                                 name="Estado"
                                 value={Livro.Estado}
-                                onChange={handleChange}>
-                                    <option>Novo</option>
-                                    <option value="1">Usado</option>
-                                    <option value="2">Danificado</option>
+                                onChange={handleChange}
+                                isInvalid={validated && Livro.Estado.trim() === ''}
+                                required
+                                >
+                                    <option value="">Selecione o estado do livro</option>
+                                    <option value="Novo">Novo</option>
+                                    <option value="Usado">Usado</option>
+                                    <option value="Danificado">Danificado</option>
                                 </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    Por favor, selecione o estado do livro.
+                                </Form.Control.Feedback>
                             </InputGroup>
 
                             <Row className="mb-3">
@@ -287,13 +304,18 @@ function FormLivros() {
                                         name="Observacoes"
                                         value={Livro.Observacoes}
                                         onChange={handleChange}
+                                        isInvalid={validated && Livro.Observacoes.trim() === ''}
+                                        required
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            Por favor, digite as observações.
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                             </Row>
 
                             <Button variant="success" type='submit'  className="m-2">
-                                <i className="bi bi-check-lg">{indexEditando === null ? 'Cadastrar' : 'Salvar'} </i>
+                                <i className="bi bi-check-lg">{indexEditando === null ? 'Salvar' : 'Salvar Alterações'} </i>
                             </Button>
                             <Button variant="secondary" type='button'>Cancelar</Button>
                         </Card.Body>
@@ -320,26 +342,37 @@ function FormLivros() {
                     </tr>
                 </thead>
                 <tbody>
-                {listaLivros.map((livro, index) => (
-                <tr key={index}>
-                        <td>{livro.Titulo}</td>
-                        <td>{livro.Autor}</td>
-                        <td>{livro.Editora}</td>
-                        <td>{livro.Ano}</td>
-                        <td>{livro.Categoria}</td>
-                        <td>{livro.ISBN}</td>
-                        <td>{livro.NumeroDePaginas}</td>
-                        <td>{livro.Genero}</td>
-                        <td>{livro.Estado}</td>
-                        <td>{livro.Tombo}</td>
-                        <td>{livro.DataDeCadastro}</td>
-                        <td>{livro.Observacoes}</td>
-                        <td>
-                            <Button variant="primary" onClick={() => handleEdit(index)} className="m-2">Editar</Button>
-                            <Button variant="danger" onClick={() => handleDelete(index)} >Excluir</Button>
-                        </td>
-                    </tr>
-                ))}
+                    {(() => {
+                        if (listaLivros.length > 0) {
+                            return listaLivros.map((livro, index) => (
+                            <tr key={index}>
+                            <td>{livro.Titulo}</td>
+                            <td>{livro.Autor}</td>
+                            <td>{livro.Editora}</td>
+                            <td>{livro.Ano}</td>
+                            <td>{livro.Categoria}</td>
+                            <td>{livro.ISBN}</td>
+                            <td>{livro.NumeroDePaginas}</td>
+                            <td>{livro.Genero}</td>
+                            <td>{livro.Estado}</td>
+                            <td>{livro.Tombo}</td>
+                            <td>{livro.DataDeCadastro}</td>
+                            <td>{livro.Observacoes}</td>
+                             <td>
+                                <Button variant="primary" onClick={() => handleEdit(index)} className="m-2">Editar</Button>
+                                <Button variant="danger" onClick={() => handleDelete(index)}>Excluir</Button>
+                            </td>
+                            </tr>));
+                            } else {
+                                 return (
+                                 <tr>
+                                    <td colSpan="13" className="text-center"> Nenhum livro cadastrado
+
+                                    </td>
+                                </tr>
+                                 );
+                                }
+                                })()}
                 </tbody>
             </Table>
             </div>
