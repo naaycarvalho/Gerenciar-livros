@@ -174,7 +174,7 @@ class UsuarioModel {
         return await dao.deletar(this.#id);
     }
 
-    async atualizar(id, usuarioData) {
+    async atualizar() {
         const dao = new UsuarioDAO();
         return await dao.atualizar(this.#id, this);
     }

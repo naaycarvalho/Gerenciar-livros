@@ -318,7 +318,7 @@ function FornecedorForm() {
               {fornecedores.map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{item.razaoSocial}</td>
+                  <td>{item.nome}</td>
                   <td>{item.cnpj}</td>
                   <td>{item.representante}</td>
                   <td>{item.telefone}</td>
