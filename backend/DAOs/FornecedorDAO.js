@@ -4,6 +4,7 @@ class FornecedorDAO {
 
     async inserir(fornecedor) {
         const {razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta} = fornecedor;
+        console.log('Dados recebidos para inserção:', { razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta });
         const query='INSERT INTO fornecedores (razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const [result] = await db.execute(query, [razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta]);
         return result;
@@ -34,7 +35,7 @@ class FornecedorDAO {
     }
 
     async atualizar(id, fornecedor) {
-        const { razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta } = usuario;
+        const { razaoSocial, cnpj, representante, telefone, email, endereco, banco, agencia, conta } = fornecedor;
         const query = `
             UPDATE fornecedores
             SET razaoSocial = ?, cnpj = ?, representante = ?, telefone = ?, email = ?, endereco = ?, banco = ?, agencia = ?, conta = ?

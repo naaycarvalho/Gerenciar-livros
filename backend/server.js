@@ -14,7 +14,9 @@ app.use('/fornecedor', fornecedoresRoutes);
 app.use('/livro', livrosRoutes);
 
 app.use('/usuario', require('./routes/UsuariosRoutes.js'));
+app.use('/fornecedor', require('./routes/FornecedoresRoutes.js'));
 app.use('/livro', require('./routes/LivrosRoutes.js'));
+
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });

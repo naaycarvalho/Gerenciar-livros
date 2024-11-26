@@ -121,11 +121,17 @@ class FornecedorModel {
         };
     }
 
-    static async criar(fornecedorData){
+    static async criar(fornecedorData) {
         const dao = new FornecedorDAO();
-
+    
+        // Validação de dados para garantir que não há undefined
+        if (!fornecedorData.razaoSocial || !fornecedorData.cnpj || !fornecedorData.representante || !fornecedorData.telefone || !fornecedorData.email || !fornecedorData.endereco || !fornecedorData.banco || !fornecedorData.agencia || !fornecedorData.conta) {
+            throw new Error('Todos os campos são obrigatórios.');
+        }
+    
+        // Criação do fornecedor
         const fornecedor = new FornecedorModel(
-            null,
+            null, // id será gerado pelo banco
             fornecedorData.razaoSocial,
             fornecedorData.cnpj,
             fornecedorData.representante,
@@ -135,14 +141,16 @@ class FornecedorModel {
             fornecedorData.banco,
             fornecedorData.agencia,
             fornecedorData.conta
-        )
-
-        const result = await dao.inserir(fornecedor.toJSON());
-        
-        fornecedor.#id = result.insertId;
-
+        );
+    
+        // Inserir no banco de dados
+        const result = await dao.inserir(fornecedorData);
+    
+        fornecedor.id = result.insertId;
+    
         return fornecedor;
     }
+    
 
     static async buscaPorFiltro(termo) {
         const dao = new FornecedorDAO();

@@ -82,11 +82,11 @@ class FornecedorController {
                 });
             }
 
-            await fornecedor.deletar();
+            await fornecedor.deletar(id);
 
             res.status(200).json({
                 message: 'Fornecedor excluido com sucesso.',
-                data: usuario.toJSON()
+                data: fornecedor.toJSON()
             });
         } catch (error) {
             console.error('Erro ao excluir fornecedor:', error);
@@ -125,7 +125,7 @@ class FornecedorController {
 
             res.status(200).json({
                 message: 'Fornecedor atualizado com sucesso.',
-                data: usuario.toJSON()
+                data: fornecedor.toJSON()
             });
         } catch (error) {
             console.error('Erro ao atualizar fornecedor:', error);

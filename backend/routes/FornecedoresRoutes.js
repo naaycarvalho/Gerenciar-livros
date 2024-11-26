@@ -1,11 +1,13 @@
 const express = require('express');
-const fornecedorController = require('../controllers/FornecedorController.js')
 const router = express.Router();
+const FornecedorController = require('../controllers/FornecedorController');
 
-router.post('/', fornecedorController.inserir);
-router.put('/:id', fornecedorController.atualizar);
-router.get('/:id', fornecedorController.buscarPorId);
-router.get('/', fornecedorController.buscarPorFiltro);
-router.delete('/:id', fornecedorController.deletar);
+// Rota de inserção de fornecedor
+router.post('/fornecedores', FornecedorController.inserir);
+router.get('/fornecedores', FornecedorController.buscarPorFiltro);
+router.get('/fornecedores/:id', FornecedorController.buscarPorId);
+router.delete('/fornecedores/:id', FornecedorController.deletar);
+router.put('/fornecedores/:id', FornecedorController.atualizar);
 
 module.exports = router;
+

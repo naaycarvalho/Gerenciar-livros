@@ -14,8 +14,6 @@ CREATE TABLE usuarios (
 
 
 
-CREATE SCHEMA `fornecedores`;
-
 CREATE TABLE fornecedores (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     razaoSocial VARCHAR(200) NOT NULL, 
