@@ -365,7 +365,7 @@ function FormLivros() {
                 </Form>
             </div>
             <div className="p-2">
-            <InputGroup className="mb-3">
+            <InputGroup className="mb-3 input-filtro">
           <Form.Control
             type="text"
             placeholder="Buscar por Título, Autor, Gênero ou Categoria"
@@ -428,6 +428,7 @@ function FormLivros() {
                 </tbody>
             </Table>
             </div>
+            
         </Stack>
     );
 }
