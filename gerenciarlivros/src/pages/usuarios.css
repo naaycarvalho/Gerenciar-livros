@@ -11,3 +11,9 @@
     width: 80%;
     justify-self: center;
 }
+
+.usuarios .input-filtro{
+    width: 30%;
+    margin-bottom: 1rem;
+    margin-left: 130px;
+}
