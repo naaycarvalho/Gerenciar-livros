@@ -27,6 +27,8 @@ function FormLivros() {
   const [listaLivros, setListaLivros] = useState([]);
   const [indexEditando, setIndexEditando] = useState(null);
   const [validated, setValidated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [ListaFiltrada, setListaFiltrada] = useState([]);
 
   // Carregar livros na inicialização
   useEffect(() => {
@@ -37,6 +39,7 @@ function FormLivros() {
     try {
       const response = await livroService.obterTodosLivros();
       setListaLivros(response.data || []);
+      setListaFiltrada(response.data || []);
     } catch (erro) {
       console.error('Erro ao carregar livros:', erro);
     }
@@ -123,6 +126,23 @@ function FormLivros() {
         console.error('Erro ao excluir livro:', erro);
         alert('Erro ao excluir livro. Tente novamente.');
       }
+    }
+  };
+  const handleFiltrarChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    if (value.trim() === '') {
+      setListaFiltrada(listaLivros);
+    } else {
+      setListaFiltrada(
+        listaLivros.filter((livro) =>
+          livro.Titulo.toLowerCase().includes(value.toLowerCase()) ||
+          livro.Autor.toLowerCase().includes(value.toLowerCase()) ||
+          livro.Categoria.toLowerCase().includes(value.toLowerCase()) ||
+          livro.Genero.toLowerCase().includes(value.toLowerCase())
+        )
+      );
     }
   };
 
@@ -345,9 +365,18 @@ function FormLivros() {
                 </Form>
             </div>
             <div className="p-2">
+            <InputGroup className="mb-3">
+          <Form.Control
+            type="text"
+            placeholder="Buscar por Título, Autor, Gênero ou Categoria"
+            value={searchTerm}
+            onChange={handleFiltrarChange}
+          />
+        </InputGroup>
             <Table responsive striped bordered hover>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Título</th>
                         <th>Autor</th>
                         <th>Editora</th>
@@ -365,9 +394,10 @@ function FormLivros() {
                 </thead>
                 <tbody>
                     {(() => {
-                        if (listaLivros.length > 0) {
-                            return listaLivros.map((livro, index) => (
-                            <tr key={ index}>                                
+                        if (ListaFiltrada.length > 0) {
+                            return ListaFiltrada.map((livro, index) => (
+                            <tr key={ index}>  
+                            <td>{livro.id}</td>                              
                             <td>{livro.Titulo}</td>
                             <td>{livro.Autor}</td>
                             <td>{livro.Editora}</td>
