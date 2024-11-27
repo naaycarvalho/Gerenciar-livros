@@ -94,7 +94,7 @@ const FormUser = ({ usuarioId, onSalvarUsuario, onCancelar }) => {
                             <Form.Control.Feedback type="invalid">{errors.cpf}</Form.Control.Feedback>
                         </Col>
                         <Col>
-                            <Form.Control type='date' placeholder="Data Nascimento"
+                            <Form.Control type='date' placeholder="Data Nascimento" title="Data de nascimento"
                                 value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} isInvalid={!!errors.dataNascimento} />
                             <Form.Control.Feedback type="invalid">{errors.dataNascimento}</Form.Control.Feedback>
                         </Col>

@@ -109,7 +109,7 @@ class FornecedorModel {
     toJSON() {
         return {
             id: this.#id,
-            nome: this.#razaoSocial,
+            razaoSocial: this.#razaoSocial,
             cnpj: this.#cnpj,
             representante: this.#representante,
             telefone: this.#telefone,

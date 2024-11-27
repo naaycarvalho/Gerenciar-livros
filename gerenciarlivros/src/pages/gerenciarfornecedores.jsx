@@ -3,7 +3,7 @@ import { Button, Form, Row, Col, Table } from "react-bootstrap";
 import InputMask from "react-input-mask";
 import Stack from "react-bootstrap/Stack";
 import FornecedorService from "../services/FornecedorService";
-
+import './gerenciarfornecedores.css';
 
 const fornecedorService = new FornecedorService();
 
@@ -58,7 +58,6 @@ function FornecedorForm() {
     }
   
     setValidated(true);
-  
     if (editingIndex !== null) {
 
       fornecedorService.atualizarFornecedor(fornecedores[editingIndex].id, fornecedor)
@@ -113,6 +112,21 @@ function FornecedorForm() {
     }
   };
   
+  const resetarFormulario = () => {
+    setFornecedor({
+      razaoSocial: "",
+      cnpj: "",
+      representante: "",
+      telefone: "",
+      email: "",
+      endereco: "",
+      banco: "",
+      agencia: "",
+      conta: "",
+    });
+    setValidated(false);
+    setEditingIndex(null);
+  };
 
   // Editar fornecedor
   const handleEdit = (index) => {
@@ -125,17 +139,16 @@ function FornecedorForm() {
       <Stack gap={2} className="fornecedor">
         <div className="p-2">
           <div className="card">
-            <h5 className="card-header">Cadastro de Fornecedores</h5>
+            <h5 className="card-header">{editingIndex !== null ? "Editar Fornecedor" : "Cadastrar Fornecedor"}</h5>
             <div className="card-body">
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formRazaoSocial">
-                      <Form.Label>Razão Social</Form.Label>
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Digite a Razão Social"
+                        placeholder="Razão Social"
                         name="razaoSocial"
                         value={fornecedor.razaoSocial}
                         onChange={handleChange}
@@ -147,11 +160,10 @@ function FornecedorForm() {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formCNPJ">
-                      <Form.Label>CNPJ</Form.Label>
                       <InputMask
                         required
                         mask="99.999.999/9999-99"
-                        placeholder="Digite o CNPJ"
+                        placeholder="CNPJ"
                         name="cnpj"
                         value={fornecedor.cnpj}
                         onChange={handleChange}
@@ -168,11 +180,10 @@ function FornecedorForm() {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formRepresentante">
-                      <Form.Label>Representante</Form.Label>
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Digite o nome do Representante"
+                        placeholder="Representante"
                         name="representante"
                         value={fornecedor.representante}
                         onChange={handleChange}
@@ -184,11 +195,10 @@ function FornecedorForm() {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formTelefone">
-                      <Form.Label>Telefone</Form.Label>
                       <InputMask
                         required
                         mask="(99) 99999-9999"
-                        placeholder="Digite o Telefone"
+                        placeholder="Telefone"
                         name="telefone"
                         value={fornecedor.telefone}
                         onChange={handleChange}
@@ -205,11 +215,10 @@ function FornecedorForm() {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formEmail">
-                      <Form.Label>E-mail</Form.Label>
                       <Form.Control
                         required
                         type="email"
-                        placeholder="Digite o E-mail"
+                        placeholder="E-mail"
                         name="email"
                         value={fornecedor.email}
                         onChange={handleChange}
@@ -221,11 +230,10 @@ function FornecedorForm() {
                   </Col>
                   <Col md={6}>
                     <Form.Group controlId="formEndereco">
-                      <Form.Label>Endereço</Form.Label>
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Digite o Endereço"
+                        placeholder="Endereço"
                         name="endereco"
                         value={fornecedor.endereco}
                         onChange={handleChange}
@@ -241,7 +249,6 @@ function FornecedorForm() {
                 <Row>
                   <Col md={6}>
                     <Form.Group controlId="formBanco">
-                      <Form.Label>Banco</Form.Label>
                       <Form.Select
                         required
                         name="banco"
@@ -262,8 +269,8 @@ function FornecedorForm() {
                   </Col>
                   <Col md={3}>
                     <Form.Group controlId="formAgencia">
-                      <Form.Label>Agência</Form.Label>
                       <InputMask
+                        placeholder="Agência"
                         required
                         mask="9999-9"
                         name="agencia"
@@ -275,8 +282,8 @@ function FornecedorForm() {
                   </Col>
                   <Col md={3}>
                     <Form.Group controlId="formConta">
-                      <Form.Label>Conta</Form.Label>
                       <InputMask
+                        placeholder="Conta"
                         required
                         mask="99999999-9"
                         name="conta"
@@ -288,9 +295,10 @@ function FornecedorForm() {
                   </Col>
                 </Row>
                 <br />
-                <Button variant="success" type="submit">
-                  <i className="bi bi-check-lg"></i> {editingIndex !== null ? "Atualizar" : "Salvar"}
+                <Button variant="success" type="submit" className="m-2">
+                  <i className="bi bi-check-lg"></i>Salvar
                 </Button>
+                <Button variant="secondary" type="button" onClick={resetarFormulario}>Cancelar</Button>
               </Form>
             </div>
           </div>
@@ -318,7 +326,7 @@ function FornecedorForm() {
               {fornecedores.map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{item.nome}</td>
+                  <td>{item.razaoSocial}</td>
                   <td>{item.cnpj}</td>
                   <td>{item.representante}</td>
                   <td>{item.telefone}</td>

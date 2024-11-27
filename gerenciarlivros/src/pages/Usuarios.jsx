@@ -18,6 +18,7 @@ function Usuarios() {
 
   useEffect(() => {
     if (alert.show) {
+      //Fechar o alerta automatico
       const timer = setTimeout(() => {
         handleCloseAlert();
       }, 1000); // Tempo do delay em milissegundos (10 segundos)

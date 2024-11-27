@@ -31,7 +31,7 @@ function FormLivros() {
   // Carregar livros na inicialização
   useEffect(() => {
     carregarLivros();
-  }, []);
+  }, [indexEditando]);
 
   const carregarLivros = async () => {
     try {
@@ -65,7 +65,9 @@ function FormLivros() {
     try {
       if (indexEditando !== null) {
         // Atualizar livro existente
+        console.log(Livro)
         const livroAtualizado = await livroService.atualizarLivro(listaLivros[indexEditando].id, Livro);
+        //alert sucesso
         const livrosAtualizados = [...listaLivros];
         livrosAtualizados[indexEditando] = livroAtualizado.data;
         setListaLivros(livrosAtualizados);
@@ -73,10 +75,12 @@ function FormLivros() {
       } else {
         // Cadastrar novo livro
         const livroCadastrado = await livroService.cadastrarLivro(Livro);
+        //alert sucesso
         setListaLivros((prevLista) => [...prevLista, livroCadastrado.data]);
       }
       resetarFormulario(); // Garante que o formulário é resetado
     } catch (erro) {
+        //alerta erro
       console.error('Erro ao salvar livro:', erro);
       alert('Erro ao salvar livro. Tente novamente.');
     }
@@ -100,23 +104,22 @@ function FormLivros() {
     });
     setValidated(false);
     setIndexEditando(null);
-    ;
   };
 
   const handleEdit = (index) => {
-    const livroSelecionado = listaLivros[index];
+      const livroSelecionado = listaLivros[index];
     setLivro({ ...livroSelecionado }); // Copia os valores do livro
     setIndexEditando(index);
-  };
-  
-  
+  }; 
 
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este livro?')) {
       try {
         await livroService.deletarLivro(id);
+
         setListaLivros((prevLista) => prevLista.filter((livro) => livro.id !== id));
       } catch (erro) {
+        
         console.error('Erro ao excluir livro:', erro);
         alert('Erro ao excluir livro. Tente novamente.');
       }
@@ -129,10 +132,9 @@ function FormLivros() {
             <div className="p-2">
                 <Form noValidate  validated={validated} onSubmit={handleSubmit}   >
                     <Card className="mb-3">
-                        <Card.Header>Cadastrar Livro</Card.Header>
+                        <Card.Header>{indexEditando === null ? 'Cadastrar Livro' : 'Editar Livro'}</Card.Header>
                         <Card.Body>
                             <Form.Group controlId="FormTitulo" className="mb-3">
-                                <Form.Label>Título</Form.Label>
                                 <Form.Control 
                                 type="text"
                                 placeholder="Título do Livro" 
@@ -150,9 +152,7 @@ function FormLivros() {
                             <Row className="mb-3">
                                 <Col md={6}>
                                     <Form.Group controlId="FormAutor">
-                                        <Form.Label>Autor</Form.Label>
                                         <Form.Control 
-                                        
                                         type="text" 
                                         placeholder="Autor do Livro"
                                         name="Autor"
@@ -167,7 +167,6 @@ function FormLivros() {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Group controlId="FormEditora">
-                                        <Form.Label>Editora</Form.Label>
                                         <Form.Control
                                         type="text"
                                         placeholder="Editora do Livro" 
@@ -186,11 +185,11 @@ function FormLivros() {
                             <Row className="mb-3">
                                 <Col md={6}>
                                     <Form.Group controlId='FormAno'>
-                                        <Form.Label>Data de Publicação</Form.Label>
                                         <Form.Control
+                                        title="Data publicação"
                                         type="date" 
                                         name="Ano"
-                                        value={Livro.Ano}
+                                        value={Livro.Ano.split('T')[0]}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Ano.trim() === ''}
                                         required />
@@ -201,7 +200,6 @@ function FormLivros() {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Group controlId="FormCategoria">
-                                        <Form.Label>Categoria</Form.Label>
                                         <Form.Control 
                                         type="text" 
                                         placeholder="Categoria"
@@ -221,7 +219,6 @@ function FormLivros() {
                             <Row className="mb-3">
                                 <Col md={6}>
                                     <Form.Group controlId="FormISBN">
-                                        <Form.Label>ISBN</Form.Label>
                                         <InputMask
                                         mask="999-9-9999-9999-9"
                                         type="text"
@@ -230,7 +227,7 @@ function FormLivros() {
                                         value={Livro.ISBN}
                                         onChange={handleChange}
                                         className='form-control'
-                                        isInvalid={validated && Livro.ISBN.trim() === ''}
+                                        isInvalid={validated && Livro.ISBN.toString().trim() === ''}
                                         required />
                                         <Form.Control.Feedback type="invalid">
                                             Por favor, digite o ISBN da obra.
@@ -239,7 +236,6 @@ function FormLivros() {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Group controlId="FormPaginas">
-                                        <Form.Label>Número de Páginas</Form.Label>
                                         <Form.Control 
                                         type="text" 
                                         maxLength={4}
@@ -248,7 +244,7 @@ function FormLivros() {
                                         value={Livro.NumeroDePaginas}
                                         onChange={handleChange}
                                         className='form-control'
-                                        isInvalid={validated && Livro.NumeroDePaginas.trim() === ''}
+                                        isInvalid={validated && Livro.NumeroDePaginas.toString().trim() === ''}
                                         required/>
                                         <Form.Control.Feedback type="invalid">
                                             Por favor, digite o número de páginas.
@@ -258,7 +254,6 @@ function FormLivros() {
                             </Row>
 
                             <InputGroup controlId="FormGenero" className="mb-3">
-                                <InputGroup.Text>Gênero</InputGroup.Text>
                                 <Form.Select
                                 name="Genero"
                                 value={Livro.Genero}
@@ -280,7 +275,6 @@ function FormLivros() {
                             </InputGroup>
 
                             <InputGroup className="mb-3">
-                                <InputGroup.Text>Estado do Livro</InputGroup.Text>
                                 <Form.Select 
                                 name="Estado"
                                 value={Livro.Estado}
@@ -301,7 +295,6 @@ function FormLivros() {
                             <Row className="mb-3">
                                 <Col md={3}>
                                     <Form.Group controlId="FormTombo">
-                                        <Form.Label>Nº do Tombo</Form.Label>
                                         <Form.Control 
                                         type="text"
                                         placeholder="Nº do Tombo"
@@ -309,17 +302,17 @@ function FormLivros() {
                                         name="Tombo"
                                         value={Livro.Tombo}
                                         onChange={handleChange}
-                                        isInvalid={validated && Livro.Tombo.trim() === ''}
+                                        isInvalid={validated && Livro.Tombo.toString().trim() === ''}
                                         required />
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
                                     <Form.Group controlId="FormDataDeCadastro">
-                                        <Form.Label>Data de Cadastro</Form.Label>
                                         <Form.Control 
+                                        title="Data cadastro"
                                         type="date" 
                                         name="DataDeCadastro"
-                                        value={Livro.DataDeCadastro}
+                                        value={Livro.DataDeCadastro.split('T')[0]}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.DataDeCadastro.trim() === ''}
                                         required />
@@ -327,9 +320,9 @@ function FormLivros() {
                                 </Col>
                                 <Col md={6}>
                                     <Form.Group controlId="FormObservacoes">
-                                        <Form.Label>Observações</Form.Label>
                                         <Form.Control as="textarea" rows={3}
                                         name="Observacoes"
+                                        placeholder="Observações"
                                         value={Livro.Observacoes}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Observacoes.trim() === ''}
@@ -343,7 +336,7 @@ function FormLivros() {
                             </Row>
 
                             <Button variant="success" type='submit'  className="m-2">
-                                <i className="bi bi-check-lg">{indexEditando === null ? 'Salvar' : 'Salvar Alterações'} </i>
+                                <i className="bi bi-check-lg">Salvar</i>
                             </Button>
                             <Button variant="secondary" type="button" onClick={resetarFormulario}>Cancelar</Button>
 
@@ -352,7 +345,7 @@ function FormLivros() {
                 </Form>
             </div>
             <div className="p-2">
-            <Table responsive="md" striped bordered hover>
+            <Table responsive striped bordered hover>
                 <thead>
                     <tr>
                         <th>Título</th>
@@ -374,7 +367,7 @@ function FormLivros() {
                     {(() => {
                         if (listaLivros.length > 0) {
                             return listaLivros.map((livro, index) => (
-                            <tr key={ index || livro.id}>                                
+                            <tr key={ index}>                                
                             <td>{livro.Titulo}</td>
                             <td>{livro.Autor}</td>
                             <td>{livro.Editora}</td>
@@ -408,6 +401,8 @@ function FormLivros() {
         </Stack>
     );
 }
+
+
 
 export default FormLivros;
 
