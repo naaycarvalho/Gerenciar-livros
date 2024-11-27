@@ -22,7 +22,7 @@ function FornecedorForm() {
 
   const [fornecedores, setFornecedores] = useState([]);
   const [validated, setValidated] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
+  
 
 
 
