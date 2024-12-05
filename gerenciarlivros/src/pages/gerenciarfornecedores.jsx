@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Row, Col, Table } from "react-bootstrap";
+import { Button, Form, Row, Col, Table, InputGroup } from "react-bootstrap";
 import InputMask from "react-input-mask";
 import Stack from "react-bootstrap/Stack";
 import FornecedorService from "../services/FornecedorService";
 import './gerenciarfornecedores.css';
 
+
 const fornecedorService = new FornecedorService();
+
+
+
 
 function FornecedorForm() {
   const [fornecedor, setFornecedor] = useState({
@@ -22,9 +26,40 @@ function FornecedorForm() {
 
   const [fornecedores, setFornecedores] = useState([]);
   const [validated, setValidated] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [listaFiltrada, setListaFiltrada] = useState([]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    setListaFiltrada(fornecedores);
+  }, [fornecedores]);
   
+  {listaFiltrada.map((fornecedor, index) => (
+    <tr key={index}>
+      {}
+    </tr>
+  ))}
 
 
+  
 
 
   useEffect(() => {
@@ -74,6 +109,7 @@ function FornecedorForm() {
 
       fornecedorService.cadastrarFornecedor(fornecedor)
         .then((response) => {
+          
           setFornecedores([...fornecedores, response.data]);
         })
         .catch((erro) => {
@@ -81,7 +117,7 @@ function FornecedorForm() {
         });
     }
   
- 
+
     setFornecedor({
       razaoSocial: "",
       cnpj: "",
@@ -133,6 +169,26 @@ function FornecedorForm() {
     setFornecedor(fornecedores[index]);
     setEditingIndex(index);
   };
+
+  const handleFiltrarChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    if (value.trim() === '') {
+      setListaFiltrada(fornecedores);
+    } else {
+      setListaFiltrada(
+        fornecedores.filter((fornecedor) =>
+          fornecedor.razaoSocial.toLowerCase().includes(value.toLowerCase()) ||
+          fornecedor.cnpj.toLowerCase().includes(value.toLowerCase()) ||
+        fornecedor.representante.toLowerCase().includes(value.toLowerCase())
+
+        )
+      );
+    }
+  };
+
+
 
   return (
     <>
@@ -306,6 +362,18 @@ function FornecedorForm() {
 
 
         <div className="p-2">
+
+        <InputGroup className="mb-3 input-filtro">
+          <Form.Control
+            type="text"
+            placeholder="Buscar por Nome, CNPJ ou Representante"
+            value={searchTerm}
+            onChange={handleFiltrarChange}
+          />
+        </InputGroup>
+
+
+
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -323,7 +391,7 @@ function FornecedorForm() {
               </tr>
             </thead>
             <tbody>
-              {fornecedores.map((item, index) => (
+              {listaFiltrada.map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.razaoSocial}</td>
