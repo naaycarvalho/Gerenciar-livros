@@ -81,19 +81,22 @@ const FormUser = ({ usuarioId, onSalvarUsuario, onCancelar }) => {
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3">
                         <Col>
-                            <Form.Control type='text' placeholder="Nome" 
+                            <Form.Label>Nome</Form.Label>
+                            <Form.Control type='text' placeholder="Digite o nome" 
                                 value={nome} onChange={(e) => setNome(e.target.value)} isInvalid={!!errors.nome} />
                             <Form.Control.Feedback type="invalid">{errors.nome}</Form.Control.Feedback>
                         </Col>
                     </Row>  
                     <Row className="mb-3">
                         <Col>
+                            <Form.Label>CPF</Form.Label>
                             <InputMask mask="999.999.999-99" value={cpf} onChange={(e) => setCpf(e.target.value)}>
-                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.cpf} placeholder="CPF" /> )}
+                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.cpf} placeholder="Digite o cpf" /> )}
                             </InputMask>                                
                             <Form.Control.Feedback type="invalid">{errors.cpf}</Form.Control.Feedback>
                         </Col>
                         <Col>
+                            <Form.Label>Data de nascimento</Form.Label>
                             <Form.Control type='date' placeholder="Data Nascimento" title="Data de nascimento"
                                 value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} isInvalid={!!errors.dataNascimento} />
                             <Form.Control.Feedback type="invalid">{errors.dataNascimento}</Form.Control.Feedback>
@@ -101,32 +104,37 @@ const FormUser = ({ usuarioId, onSalvarUsuario, onCancelar }) => {
                     </Row>
                     <Row className="mb-3">
                         <Col>
-                            <Form.Control type='text' placeholder="Endereço" 
+                            <Form.Label>Endereço</Form.Label>
+                            <Form.Control type='text' placeholder="Digite o endereço" 
                                 value={endereco} onChange={(e) => setEndereco(e.target.value)} isInvalid={!!errors.endereco}/>
                             <Form.Control.Feedback type="invalid">{errors.endereco}</Form.Control.Feedback>
                         </Col>
                     </Row>
                     <Row className="mb-3">
                         <Col>
+                            <Form.Label>CEP</Form.Label>
                             <InputMask mask="99999-999" value={cep} onChange={(e) => setCep(e.target.value)}>
-                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.cep} placeholder="CEP" /> )}
+                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.cep} placeholder="Digite o cep" /> )}
                             </InputMask>                                
                             <Form.Control.Feedback type="invalid">{errors.cep}</Form.Control.Feedback>                            
                         </Col>
                         <Col>
+                            <Form.Label>Telefone</Form.Label>
                             <InputMask mask="(99) 99999-9999" value={telefone} onChange={(e) => setTelefone(e.target.value)}>
-                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.telefone} placeholder="Telefone" /> )}
+                                {(inputProps) => ( <Form.Control {...inputProps} isInvalid={!!errors.telefone} placeholder="Digite o telefone" /> )}
                             </InputMask>                                
                             <Form.Control.Feedback type="invalid">{errors.telefone}</Form.Control.Feedback>
                         </Col>
                     </Row>
                     <Row className="mb-3">
                         <Col>
-                            <Form.Control type='email' placeholder="E-mail" 
+                            <Form.Label>E-mail</Form.Label>
+                            <Form.Control type='email' placeholder="Digite o email" 
                                 value={email} onChange={(e) => setEmail(e.target.value)} isInvalid={!!errors.email}/>
                             <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                         </Col>
                         <Col>
+                            <Form.Label>Tipo</Form.Label>
                             <Form.Control as="select" value={tipoUsuario} 
                                 onChange={(e) => setTipoUsuario(e.target.value)} isInvalid={!!errors.tipoUsuario}>
                                 <option value="">Selecione um tipo de usuario</option>
