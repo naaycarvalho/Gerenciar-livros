@@ -35,7 +35,7 @@ CREATE TABLE livros (
 	editora VARCHAR(255) NOT NULL, 
 	ano DATE NOT NULL,
 	categoria VARCHAR(255) NOT NULL, 
-	isbn INT(13) NOT NULL, 
+	isbn VARCHAR(30) NOT NULL, 
 	numero_de_paginas INT (4)NOT NULL, 
 	genero VARCHAR(255) NOT NULL, 
 	estado VARCHAR(255) NOT NULL,
