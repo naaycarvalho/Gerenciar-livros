@@ -14,7 +14,7 @@ function ListUser({ onEditarUsuario, onExcluirUsuario }){
 
     const buscarUsuarios = (filtro) =>{
         usuarioService.obterUsuarios(filtro).then((response) => {
-            setUsuarios(response.data || [])
+            setUsuarios(response.data || []);
         }).catch((erro) => {
             console.error('Erro ao buscar o usuário:', erro);
         });
@@ -43,7 +43,7 @@ function ListUser({ onEditarUsuario, onExcluirUsuario }){
                 <tbody>
                     {
                         usuarios.length > 0 
-                        ? (usuarios.map((usuario) => (
+                        ? (usuarios.sort((a, b) => a.nome.localeCompare(b.nome)).map((usuario) => (
                             <tr key={usuario.id}>
                                 <td>{usuario.nome}</td>
                                 <td>{usuario.cpf}</td>
