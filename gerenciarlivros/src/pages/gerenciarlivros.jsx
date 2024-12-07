@@ -42,7 +42,7 @@ function FormLivros() {
   // Carregar livros na inicialização
   useEffect(() => {
     carregarLivros();
-  }, []);
+  }, [listaLivros]);
 
   const carregarLivros = async () => {
     try {
