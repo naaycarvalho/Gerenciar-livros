@@ -28,7 +28,7 @@ function ListUser({ onEditarUsuario, onExcluirUsuario }){
     return (
         <>
             <Form.Control type='text' placeholder="Buscar por nome, cpf ou email" className='input-filtro' onChange={handleFiltroChange} />
-            <Table striped bordered hover>
+            <Table responsive striped bordered hover>
                 <thead>
                     <tr>
                         <th>Nome</th>

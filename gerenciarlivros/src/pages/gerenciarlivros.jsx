@@ -160,7 +160,9 @@ function FormLivros() {
             <div className="p-2">
                 <Form noValidate  validated={validated} onSubmit={handleSubmit}   >
                     <Card className="mb-3">
-                        <Card.Header>{indexEditando === null ? 'Cadastrar Livro' : 'Editar Livro'}</Card.Header>
+                        <Card.Header>
+                          <h5 className="m-0">{indexEditando === null ? 'Cadastrar Livro' : 'Editar Livro'}</h5>
+                        </Card.Header>
                         <Card.Body>
                             <Form.Group controlId="FormTitulo" className="mb-3">
                               <label>Titulo </label>

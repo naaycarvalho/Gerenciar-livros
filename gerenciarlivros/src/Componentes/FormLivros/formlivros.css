@@ -1,6 +1,16 @@
+.FormLivros{
+    margin: 0 10%;
+}
+
 .FormLivros .card,
-.FormLivros .table{
+.FormLivros .table-responsive{
     box-shadow: 0px 0px 10px 0px black;
-    width: 80%;
+    width: 100%;
     justify-self: center;
 }
+
+.FormLivros .input-filtro{
+    width: 30%;
+    margin-left: 1%;
+}
+
