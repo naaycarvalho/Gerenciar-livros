@@ -30,7 +30,7 @@ class LivrosDAO {
 
     async buscarPorTermo(termo) {
         if (!termo || termo.trim() === '') {
-            const query = 'SELECT * FROM livros';
+            const query = 'SELECT * FROM livros ORDER BY titulo ASC';
             const [rows] = await db.execute(query);
             return rows;
         } else {

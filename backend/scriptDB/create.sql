@@ -43,4 +43,14 @@ CREATE TABLE livros (
 	data_cadastro DATE NOT NULL, 
 	observacoes VARCHAR(255) NOT NULL
 	
-);  
+); 
+
+
+CREATE TABLE autores(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	Nome VARCHAR(255) NOT NULL,
+	Sobrenome VARCHAR(255) NOT NULL,
+	Nacionalidade VARCHAR(255) NOT NULL,
+	DataDeNascimento DATE NOT NULL,
+	Biografia VARCHAR(255) NOT NULL
+);

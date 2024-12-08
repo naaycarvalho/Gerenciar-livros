@@ -168,7 +168,7 @@ function FormLivros() {
                               <label>Titulo </label>
                                 <Form.Control 
                                 type="text"
-                                placeholder="Título do Livro" 
+                                placeholder="Digite o título do Livro" 
                                 name="Titulo"
                                 value={Livro.Titulo}
                                 onChange={handleChange}
@@ -176,7 +176,7 @@ function FormLivros() {
                                 isInvalid={validated && Livro.Titulo.trim() === ''}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                    Por favor, digite o Título completo.
+                                  o Título completo do Livro é obrigatório.
                                 </Form.Control.Feedback>
                             </Form.Group>
 
@@ -186,14 +186,14 @@ function FormLivros() {
                                         <label>Autor </label>
                                         <Form.Control 
                                         type="text" 
-                                        placeholder="Autor do Livro"
+                                        placeholder="Digite o autor do Livro"
                                         name="Autor"
                                         value={Livro.Autor}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Autor.trim() === ''}
                                         required />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite o nome do Autor completo.
+                                        O nome do autor completo é obrigatório.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
@@ -202,14 +202,14 @@ function FormLivros() {
                                         <label>Editora </label>
                                         <Form.Control
                                         type="text"
-                                        placeholder="Editora do Livro" 
+                                        placeholder="Digite a editora do Livro" 
                                         name="Editora"
                                         value={Livro.Editora}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Editora.trim() === ''}
                                         required />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite o número de edição.
+                                           Editora do Livro é obrigatorio.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
@@ -228,7 +228,7 @@ function FormLivros() {
                                         isInvalid={validated && Livro.Ano.trim() === ''}
                                         required />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, selecione a data de publicação.
+                                           A data de publicação do Livro é obrigatorio.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
@@ -237,7 +237,7 @@ function FormLivros() {
                                         <label>Categoria </label>
                                         <Form.Control 
                                         type="text" 
-                                        placeholder="Categoria"
+                                        placeholder=" Digite a Categoria"
                                         name="Categoria"
                                         value={Livro.Categoria}
                                         className='form-control'
@@ -245,7 +245,7 @@ function FormLivros() {
                                         isInvalid={validated && Livro.Categoria.trim() === ''} 
                                         required />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite a Categoria.
+                                           A Categoria do Livro é obrigatorio.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
@@ -258,7 +258,7 @@ function FormLivros() {
                                         <InputMask
                                         mask="999-99-999-9999-9"                                  
                                         type="text"
-                                        placeholder="ISBN"
+                                        placeholder="Digite o ISBN"
                                         name="ISBN"
                                         value={Livro.ISBN}
                                         onChange={handleChange}
@@ -266,7 +266,7 @@ function FormLivros() {
                                         isInvalid={validated && Livro.ISBN.toString().trim() === ''}
                                         required />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite o ISBN da obra.
+                                             O ISBN da obra é obrigatorio.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
@@ -276,7 +276,7 @@ function FormLivros() {
                                         <Form.Control 
                                         type="text" 
                                         maxLength={4}
-                                        placeholder="Número de Páginas" 
+                                        placeholder="Digite o número de Páginas" 
                                         name="NumeroDePaginas"
                                         value={Livro.NumeroDePaginas}
                                         onChange={handleChange}
@@ -284,14 +284,14 @@ function FormLivros() {
                                         isInvalid={validated && Livro.NumeroDePaginas.toString().trim() === ''}
                                         required/>
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite o número de páginas.
+                                          O número de páginas do livro é obrigatorio.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                             </Row>
 
                             <Form.Group controlId="FormGenero" className="mb-3">
-                                <label> Selecione o Genero </label>
+                                <label> Genero </label>
                                 <Form.Select
                                 name="Genero"
                                 value={Livro.Genero}
@@ -308,12 +308,12 @@ function FormLivros() {
                                     <option value="FiccaoCientifica">Ficção Científica</option>
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
-                                    Por favor, selecione o gênero do livro.
+                                 O gênero do livro é obrigatorio.
                                 </Form.Control.Feedback>
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <label> Selecione o Estado </label>
+                                <label>  Estado conservação do livro </label>
                                 <Form.Select 
                                 name="Estado"
                                 value={Livro.Estado}
@@ -327,7 +327,7 @@ function FormLivros() {
                                     <option value="Danificado">Danificado</option>
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
-                                    Por favor, selecione o estado do livro.
+                                     O estado  de conservação do livro é obrigatorio.
                                 </Form.Control.Feedback>
                             </Form.Group>
 
@@ -337,13 +337,16 @@ function FormLivros() {
                                         <label> Nº do Tombo </label>
                                         <Form.Control 
                                         type="text"
-                                        placeholder="Nº do Tombo"
+                                        placeholder=" Digite o Nº do Tombo"
                                         maxLength={5}
                                         name="Tombo"
                                         value={Livro.Tombo}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Tombo.toString().trim() === ''}
                                         required />
+                                        <Form.Control.Feedback type="invalid">
+                                           O Tombo do livro é obrigatorio.    
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                                 <Col md={3}>
@@ -357,6 +360,9 @@ function FormLivros() {
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.DataDeCadastro.trim() === ''}
                                         required />
+                                        <Form.Control.Feedback type="invalid">
+                                           A data de cadastro é obrigatória.
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                                 <Col md={6}>
@@ -364,14 +370,14 @@ function FormLivros() {
                                         <label> Observações </label>
                                         <Form.Control as="textarea" rows={3}
                                         name="Observacoes"
-                                        placeholder="Observações"
+                                        placeholder="Digite as Observações necessárias"
                                         value={Livro.Observacoes}
                                         onChange={handleChange}
                                         isInvalid={validated && Livro.Observacoes.trim() === ''}
                                         required
                                         />
                                         <Form.Control.Feedback type="invalid">
-                                            Por favor, digite as observações.
+                                           As observações são obrigatórias.
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>

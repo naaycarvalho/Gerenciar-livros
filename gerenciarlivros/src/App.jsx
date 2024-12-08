@@ -7,6 +7,7 @@ import FornecedorForm  from './pages/gerenciarfornecedores';
 import FormLivros from './pages/gerenciarlivros';
 import Home from './pages/home';
 import "./App.css";
+import FormAutores from './pages/gerenciarautor';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/formlivros" element={<FormLivros />} />
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/fornecedores" element={<FornecedorForm />} />
+          <Route path="/autores" element={<FormAutores />} />
           
         </Routes>
       </Container>
