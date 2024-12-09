@@ -199,12 +199,14 @@ function FornecedorForm() {
             <div className="card-body">
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row>
+
                   <Col md={6}>
+                  <Form.Label>Razão Social</Form.Label>
                     <Form.Group controlId="formRazaoSocial">
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Razão Social"
+                        placeholder="Informe a Razão Social"
                         name="razaoSocial"
                         value={fornecedor.razaoSocial}
                         onChange={handleChange}
@@ -214,12 +216,14 @@ function FornecedorForm() {
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+
                   <Col md={6}>
+                  <Form.Label>CNPJ</Form.Label>
                     <Form.Group controlId="formCNPJ">
                       <InputMask
                         required
                         mask="99.999.999/9999-99"
-                        placeholder="CNPJ"
+                        placeholder="Informe o CNPJ no formato xx.xxx.xxx/xxxx-xx"
                         name="cnpj"
                         value={fornecedor.cnpj}
                         onChange={handleChange}
@@ -235,11 +239,12 @@ function FornecedorForm() {
 
                 <Row>
                   <Col md={6}>
+                  <Form.Label>Representante</Form.Label>
                     <Form.Group controlId="formRepresentante">
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Representante"
+                        placeholder="Informe o nome do Representante"
                         name="representante"
                         value={fornecedor.representante}
                         onChange={handleChange}
@@ -250,11 +255,12 @@ function FornecedorForm() {
                     </Form.Group>
                   </Col>
                   <Col md={6}>
+                  <Form.Label>Telefone</Form.Label>
                     <Form.Group controlId="formTelefone">
                       <InputMask
                         required
                         mask="(99) 99999-9999"
-                        placeholder="Telefone"
+                        placeholder="Informe Telefone"
                         name="telefone"
                         value={fornecedor.telefone}
                         onChange={handleChange}
@@ -270,11 +276,12 @@ function FornecedorForm() {
 
                 <Row>
                   <Col md={6}>
+                  <Form.Label>E-mail</Form.Label>
                     <Form.Group controlId="formEmail">
                       <Form.Control
                         required
                         type="email"
-                        placeholder="E-mail"
+                        placeholder="Informe um e-mail válido"
                         name="email"
                         value={fornecedor.email}
                         onChange={handleChange}
@@ -285,11 +292,12 @@ function FornecedorForm() {
                     </Form.Group>
                   </Col>
                   <Col md={6}>
+                  <Form.Label>Endereço</Form.Label>
                     <Form.Group controlId="formEndereco">
                       <Form.Control
                         required
                         type="text"
-                        placeholder="Endereço"
+                        placeholder="Informe o endereço"
                         name="endereco"
                         value={fornecedor.endereco}
                         onChange={handleChange}
@@ -304,6 +312,7 @@ function FornecedorForm() {
 
                 <Row>
                   <Col md={6}>
+                  <Form.Label>Banco</Form.Label>
                     <Form.Group controlId="formBanco">
                       <Form.Select
                         required
@@ -324,9 +333,10 @@ function FornecedorForm() {
                     </Form.Group>
                   </Col>
                   <Col md={3}>
+                  <Form.Label>Agência</Form.Label>
                     <Form.Group controlId="formAgencia">
                       <InputMask
-                        placeholder="Agência"
+                        placeholder="Informe a agência"
                         required
                         mask="9999-9"
                         name="agencia"
@@ -337,9 +347,10 @@ function FornecedorForm() {
                     </Form.Group>
                   </Col>
                   <Col md={3}>
+                  <Form.Label>Conta</Form.Label>
                     <Form.Group controlId="formConta">
                       <InputMask
-                        placeholder="Conta"
+                        placeholder="Informe a conta"
                         required
                         mask="99999999-9"
                         name="conta"

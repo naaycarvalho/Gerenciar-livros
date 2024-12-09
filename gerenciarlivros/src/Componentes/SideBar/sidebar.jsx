@@ -25,6 +25,11 @@ function SideBar() {
               <i className="bi bi-clipboard2-check"></i> Gerenciar Fornecedores
             </Nav.Link>
           </Nav.Item>
+          <Nav.Item>
+            <Nav.Link as={Link} to="/autores" className="text-white mb-2">
+              <i className="bi bi-person"></i> Gerenciar Autores
+            </Nav.Link>
+          </Nav.Item>
         </Nav>
         <div className="mt-auto w-100">
           <button type="button" className="botao">
