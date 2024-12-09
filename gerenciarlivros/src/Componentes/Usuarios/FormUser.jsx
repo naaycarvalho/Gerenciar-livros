@@ -187,7 +187,7 @@ const schema = yup.object().shape({
     email: yup.string()
         .required("O e-mail é obrigatório.").email("E-mail inválido."),
     tipoUsuario: yup.string()
-        .required('Tipo de usuário é obrigatório')       
+        .required('Tipo de usuário é obrigatório.')       
 });
 
 export default FormUser;

@@ -15,8 +15,8 @@ class GeneroDAO {
             const [rows] = await db.execute(query);
             return rows;
         }else{
-            const query = 'SELECT * FROM generos WHERE descricao LIKE ? OR tipo_genero LIKE ?';
-            const [rows] = await db.execute(query, [`%${termo}%`, `%${termo}%`]);
+            const query = 'SELECT * FROM generos WHERE descricao LIKE ?';
+            const [rows] = await db.execute(query, [`%${termo}%`]);
             return rows;
         }
     }

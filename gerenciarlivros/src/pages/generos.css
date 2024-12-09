@@ -1,25 +1,25 @@
-.usuarios{
+.generos{
     margin: 0 10%;
 }
 
-.usuarios .card,
-.usuarios .table-responsive{
+.generos .card,
+.generos .table-responsive{
     box-shadow: 0px 0px 10px 0px black;
     width: 100%;
     justify-self: center;
 }
 
-.usuarios .input-filtro{
+.generos .input-filtro{
     width: 40%;
     margin-bottom: 1rem;
     margin-left: 1%;
 }
 
-.usuarios .table-responsive tr th:last-child {
+.generos .table-responsive tr th:last-child {
     width: 135px;
 }
 
-.usuario-alert{
+.genero-alert{
     width: 30%;
     margin-left: auto;
     margin-right: 30px;

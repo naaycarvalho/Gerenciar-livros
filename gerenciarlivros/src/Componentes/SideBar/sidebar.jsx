@@ -17,7 +17,7 @@ function SideBar() {
           </Nav.Item>
           <Nav.Item>
             <Nav.Link as={Link} to="/usuarios" className="text-white mb-2">
-              <i className="bi bi-person-plus"></i> Gerenciar Usuários
+              <i className="bi bi-person"></i> Gerenciar Usuários
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
@@ -28,6 +28,11 @@ function SideBar() {
           <Nav.Item>
             <Nav.Link as={Link} to="/autores" className="text-white mb-2">
               <i className="bi bi-person"></i> Gerenciar Autores
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link as={Link} to="/generos" className="text-white mb-2">
+              <i className="bi bi-tag"></i> Gerenciar Gêneros
             </Nav.Link>
           </Nav.Item>
         </Nav>

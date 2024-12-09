@@ -1,16 +1,16 @@
 const API_BASE_URL = 'http://localhost:3000'
 
-class UsuarioService {
+class GeneroService {
 
-    async obterUsuarios(termo) {
-        const response = await fetch(`${API_BASE_URL}/usuario?termo=${termo}`, {
+    async obterGeneros(termo) {
+        const response = await fetch(`${API_BASE_URL}/genero?termo=${termo}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
         if(!response.ok){
-            console.log('Erro ao obter todos os usuários.');
+            console.log('Erro ao obter todos os gêneros.');
             return [];
         }
 
@@ -18,15 +18,15 @@ class UsuarioService {
         return dados;
     }
 
-    async obterUsuarioPorId(id) {
-        const response = await fetch(`${API_BASE_URL}/usuario/${id}`, {
+    async obterGeneroPorId(id) {
+        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
         if (!response.ok) {
-            console.log(`Erro ao obter o usuário com id: ${id}.`);
+            console.log(`Erro ao obter o gênero com id: ${id}.`);
             return null;
         }
 
@@ -34,17 +34,17 @@ class UsuarioService {
         return dados;
     }
 
-    async cadastrarUsuario(usuario) {
-        const response = await fetch(`${API_BASE_URL}/usuario`, {
+    async cadastrarGenero(genero) {
+        const response = await fetch(`${API_BASE_URL}/genero`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(usuario)
+            body: JSON.stringify(genero)
         });
 
         if (!response.ok) {
-            console.log('Erro ao cadastrar o usuário.');
+            console.log('Erro ao cadastrar o gênero.');
             return null;
         }
 
@@ -52,17 +52,17 @@ class UsuarioService {
         return dados;
     }
 
-    async atualizarUsuario(id, usuarioAtualizado) {
-        const response = await fetch(`${API_BASE_URL}/usuario/${id}`, {
+    async atualizarGenero(id, generoAtualizado) {
+        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(usuarioAtualizado)
+            body: JSON.stringify(generoAtualizado)
         });
 
         if (!response.ok) {
-            console.log(`Erro ao atualizar o usuário com id: ${id}.`);
+            console.log(`Erro ao atualizar o gênero com id: ${id}.`);
             return null;
         }
 
@@ -70,8 +70,8 @@ class UsuarioService {
         return dados;
     }
 
-    async deletarUsuario(id) {
-        const response = await fetch(`${API_BASE_URL}/usuario/${id}`, {
+    async deletarGenero(id) {
+        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ class UsuarioService {
         });
 
         if (!response.ok) {
-            console.log(`Erro ao deletar o usuário com id: ${id}.`);
+            console.log(`Erro ao deletar o gênero com id: ${id}.`);
             return false;
         }
 
@@ -87,4 +87,4 @@ class UsuarioService {
     }
 }
 
-export default UsuarioService;
+export default GeneroService;
