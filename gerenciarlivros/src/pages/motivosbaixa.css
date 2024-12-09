@@ -1,0 +1,15 @@
+.fornecedor{
+    margin: 0 10%;
+}
+
+.fornecedor .card,
+.fornecedor .table-responsive{
+    box-shadow: 0px 0px 10px 0px black;
+    width: 100%;
+    justify-self: center;
+}
+
+.fornecedor .input-filtro{
+    width: 40%;
+    margin-left: 1%;
+}

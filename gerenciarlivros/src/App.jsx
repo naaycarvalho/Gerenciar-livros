@@ -9,6 +9,7 @@ import Home from './pages/home';
 import "./App.css";
 import FormAutores from './pages/gerenciarautor';
 import Generos from './pages/Generos';
+import MotivosBaixa from './pages/gerenciarmotivobaixa';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/fornecedores" element={<FornecedorForm />} />
           <Route path="/autores" element={<FormAutores />} />
           <Route path="/generos" element={<Generos />} />
+          <Route path="/motivobaixa" element={<MotivosBaixa />} />
         </Routes>
       </Container>
     </div>

@@ -33,21 +33,6 @@ function FornecedorForm() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   useEffect(() => {
     setListaFiltrada(fornecedores);
   }, [fornecedores]);
