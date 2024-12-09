@@ -56,3 +56,11 @@ CREATE TABLE autores(
 	DataDeNascimento DATE NOT NULL,
 	Biografia VARCHAR(255) NOT NULL
 );
+
+
+CREATE TABLE motivosbaixa ( 
+	id INT AUTO_INCREMENT PRIMARY KEY, 
+	motivo VARCHAR(255) NOT NULL, 
+	databaixa DATE NOT NULL
+	
+); 
