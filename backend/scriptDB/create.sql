@@ -12,8 +12,6 @@ CREATE TABLE usuarios (
 	tipo_usuario VARCHAR(100) NOT NULL
 );
 
-
-
 CREATE TABLE fornecedores (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     razaoSocial VARCHAR(200) NOT NULL, 
@@ -26,7 +24,6 @@ CREATE TABLE fornecedores (
     agencia VARCHAR(10) NOT NULL, 
     conta VARCHAR(20) NOT NULL
 );
-
 
 CREATE TABLE livros ( 
 	id INT AUTO_INCREMENT PRIMARY KEY, 
@@ -42,5 +39,10 @@ CREATE TABLE livros (
 	tombo INT(5) NOT NULL, 
 	data_cadastro DATE NOT NULL, 
 	observacoes VARCHAR(255) NOT NULL
-	
-);  
+);
+
+CREATE TABLE generos ( 
+	id INT AUTO_INCREMENT PRIMARY KEY, 
+	descricao VARCHAR(255) NOT NULL, 
+	tipo_genero VARCHAR(50) NOT NULL
+);
