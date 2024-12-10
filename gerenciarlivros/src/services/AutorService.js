@@ -1,5 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000';
-
+const API_BASE_URL = 'http://localhost:3000'
 class AutorService {
 
     async obterTodosAutores() {
@@ -35,7 +34,7 @@ class AutorService {
     }
 
     async cadastrarAutor(Autor) {
-        console.log("Dados do autor:", Autor);  // Log para depuração
+        console.log("Dados do livro:", Autor);  // Log para depuração
 
         const response = await fetch(`${API_BASE_URL}/autor`, {
             method: 'POST',
@@ -55,7 +54,7 @@ class AutorService {
     }
 
     async atualizarAutor(id, autoresAtualizados) {
-        const response = await fetch(`${API_BASE_URL}/autor/${id}`, {  // Corrigido para /autor/${id}
+        const response = await fetch(`${API_BASE_URL}/livro/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
