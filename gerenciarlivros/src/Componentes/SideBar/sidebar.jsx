@@ -40,6 +40,11 @@ function SideBar() {
               <i className="bi bi-bookmark-x"></i> Gerenciar Motivos de Baixa
             </Nav.Link>
           </Nav.Item>
+          <Nav.Item>
+            <Nav.Link as={Link} to="/categorias" className="text-white mb-2">
+              <i className="bi bi-person-bounding-box"> Gerenciar Categorias</i>
+            </Nav.Link>
+          </Nav.Item>
         </Nav>
         <div className="mt-auto w-100">
           <button type="button" className="botao">

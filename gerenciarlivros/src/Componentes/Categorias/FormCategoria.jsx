@@ -3,29 +3,29 @@ import { Button, Form, Row, Col } from "react-bootstrap";
 import * as yup from 'yup';
 import '../../pages/usuarios.css';
 import PropTypes from 'prop-types';
-import GeneroService from '../../services/GeneroService';
+import CategoriaService from '../../services/CategoriaService';
 
-const generoService = new GeneroService();
+const categoriaService = new CategoriaService();
 
-const FormGenero = ({ generoId, onSalvarGenero, onCancelar }) => {
+const FormCategoria = ({ categoriaId, onSalvarCategoria, onCancelar }) => {
     const [descricao, setDescricao] = useState('');
-    const [tipoGenero, setTipoGenero] = useState('');
+    const [tipoCategoria, setTipoCategoria] = useState('');
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        if (generoId > 0) {
-            generoService.obterGeneroPorId(generoId).then((response) => {
+        if (categoriaId > 0) {
+            categoriaService.obterCategoriaPorId(categoriaId).then((response) => {
                 carregaFormulario(response.data);
             }).catch((erro) => {
-                console.error('Erro ao buscar o gênero:', erro);
+                console.error('Erro ao buscar o categoria:', erro);
             });
         }
-    }, [generoId]);
-
+    }, [categoriaId]);
+//////////////////////////////////////////////////////////////////////////////////////////////
     // Carregar os campos do formulário
-    const carregaFormulario = (genero) => {
-        setDescricao(genero ? genero.descricao : '');
-        setTipoGenero(genero ? genero.tipoGenero: '');
+    const carregaFormulario = (categoria) => {
+        setDescricao(categoria ? categoria.descricao : '');
+        setTipoCategoria(categoria ? categoria.tipoCategoria: '');
     };
 
     const limparFormulario = () => {
@@ -37,12 +37,12 @@ const FormGenero = ({ generoId, onSalvarGenero, onCancelar }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        const generoData = { descricao, tipoGenero };
+        const categoriaData = { descricao, tipoCategoria };
 
         schema
-            .validate(generoData, { abortEarly: false })
+            .validate(categoriaData, { abortEarly: false })
             .then(() => {
-                onSalvarGenero(generoData);
+                onSalvarCategoria(categoriaData);
                 limparFormulario();
             })
             .catch((err) => {
@@ -58,7 +58,7 @@ const FormGenero = ({ generoId, onSalvarGenero, onCancelar }) => {
 
     return(
         <div className="card">
-            <h5 className="card-header">{generoId > 0 ? 'Editar Gênero' : 'Cadastrar Gênero'}</h5>
+            <h5 className="card-header">{categoriaId > 0 ? 'Editar Categoria' : 'Cadastrar Categoria'}</h5>
             <div className="card-body">
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3">
@@ -66,20 +66,22 @@ const FormGenero = ({ generoId, onSalvarGenero, onCancelar }) => {
                             <Form.Label>Descrição</Form.Label>
                             <Form.Control type='text' placeholder="Digite a descrição" 
                                 value={descricao} onChange={(e) => setDescricao(e.target.value)} isInvalid={!!errors.descricao} />
-                                
                             <Form.Control.Feedback type="invalid">{errors.descricao}</Form.Control.Feedback>
                         </Col>
                         <Col>
-                            <Form.Label>Tipo</Form.Label>
-                            <Form.Control as="select" value={tipoGenero} 
-                                onChange={(e) => setTipoGenero(e.target.value)} isInvalid={!!errors.tipoGenero}>
-                                <option value="">Selecione um tipo de gênero</option>
-                                <option value="ficcao">Ficção</option>
-                                <option value="naoFiccao">Não ficção</option>
-                                <option value="poesiaTeatro">Poesia e teatro</option>
-                                <option value="outros">Outros</option>
+                            <Form.Label>Categoria</Form.Label>
+                            <Form.Control as="select" value={tipoCategoria} 
+                                onChange={(e) => setTipoCategoria(e.target.value)} isInvalid={!!errors.tipoCategoria}>
+                                <option value="">Selecione Público-alvo </option>
+                                <option value="Infantil">Crianças de 0 a 12 anos</option>
+                                <option value="InfantoJuvenil">Crianças e pré-adolescentes de 10 a 14 anos</option>
+                                <option value="JovemAdulto">Adolescentes e jovens adultos de 15 a 25 anos</option>
+                                <option value="Adulto">Leitores acima de 18 anos</option>
+                                <option value="Academico"> Estudantes, pesquisadores, profissionais</option>
+                                <option value="LGBTQIA">Comunidade LGBTQIA+ e aliados</option>
+                                <option value="Outros">Outros</option>
                             </Form.Control>
-                            <Form.Control.Feedback type="invalid">{errors.tipoGenero}</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">{errors.tipoCategoria}</Form.Control.Feedback>
                         </Col>
                     </Row>  
                     <Button variant='success' type='submit' className="m-2">
@@ -95,9 +97,9 @@ const FormGenero = ({ generoId, onSalvarGenero, onCancelar }) => {
 }
 
 // Validar as propiedades
-FormGenero.propTypes = {
-    generoId: PropTypes.number.isRequired, // 'generoId' deve ser um numero e requerido
-    onSalvarGenero: PropTypes.func.isRequired, // 'onSalvarGenero' deve ser um função e requerido
+FormCategoria.propTypes = {
+    categoriaId: PropTypes.number.isRequired, // 'categorisId' deve ser um numero e requerido
+    onSalvarCategoria: PropTypes.func.isRequired, // 'onSalvarCategoria' deve ser um função e requerido
     onCancelar: PropTypes.func.isRequired, // 'onCancelar' deve ser um função e requerido
 };
 
@@ -105,8 +107,8 @@ FormGenero.propTypes = {
 const schema = yup.object().shape({
     descricao: yup.string()
         .required("A descrição é obrigatória."),
-    tipoGenero: yup.string()
-        .required('Tipo de gênero é obrigatório.')       
+    tipoCategoria: yup.string()
+        .required('Tipo de categoria é obrigatório.')       
 });
 
-export default FormGenero;
+export default FormCategoria;

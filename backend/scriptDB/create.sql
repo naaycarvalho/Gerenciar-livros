@@ -64,3 +64,9 @@ CREATE TABLE motivosbaixa (
 	databaixa DATE NOT NULL
 	
 ); 
+
+CREATE TABLE categorias ( 
+	id INT AUTO_INCREMENT PRIMARY KEY, 
+	descricao VARCHAR(255) NOT NULL, 
+	tipo_categoria VARCHAR(150) NOT NULL
+); 

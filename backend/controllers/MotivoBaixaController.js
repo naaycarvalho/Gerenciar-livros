@@ -1,4 +1,4 @@
-const MotivoBaixaModel = require('../model/MotivoBaixaModel.js');
+const MotivoBaixaModel = require('../model/MotivosBaixaModel.js');
 
 class MotivoBaixaController {
 
