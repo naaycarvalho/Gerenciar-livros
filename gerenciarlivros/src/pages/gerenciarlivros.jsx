@@ -29,20 +29,20 @@ function FormLivros() {
   const [searchTerm, setSearchTerm] = useState('');
   const [ListaFiltrada, setListaFiltrada] = useState([]);
 
-   // Função auxiliar para formatar datas no padrão dd/MM/yyyy
-   const formatarData = (data) => {
+  // Função auxiliar para formatar datas no padrão dd/MM/yyyy
+  const formatarData = (data) => {
     if (!data) return '';
     return new Date(data).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     });
-  }; 
+  };
 
-  // Carregar livros na inicialização
+  // Carregar livros ao inicializar
   useEffect(() => {
     carregarLivros();
-  }, [listaLivros]);
+  }, []);
 
   const carregarLivros = async () => {
     try {
@@ -65,37 +65,29 @@ function FormLivros() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-
+  
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
       return;
     }
-
+  
     setValidated(true);
-
+  
     try {
       if (indexEditando !== null) {
-        // Atualizar livro existente
-        const livroAtualizado = await livroService.atualizarLivro(listaLivros[indexEditando].id, Livro);
-        const livrosAtualizados = [...listaLivros];
-        livrosAtualizados[indexEditando] = livroAtualizado.data;
-        setListaLivros(livrosAtualizados);
-        setListaFiltrada(livrosAtualizados);
-        setIndexEditando(null);
+        await livroService.atualizarLivro(listaLivros[indexEditando].id, Livro);
       } else {
-        // Cadastrar novo livro
-        const livroCadastrado = await livroService.cadastrarLivro(Livro);
-        setListaLivros((prevLista) => [...prevLista, livroCadastrado.data]);
-        setListaFiltrada((prevLista) => [...prevLista, livroCadastrado.data]);
+        await livroService.cadastrarLivro(Livro);
       }
+      await carregarLivros(); // Recarrega os livros após salvar
       resetarFormulario();
     } catch (erro) {
       console.error('Erro ao salvar livro:', erro);
       alert('Erro ao salvar livro. Tente novamente.');
     }
   };
-
+  
   const resetarFormulario = () => {
     setLivro({
       Titulo: '',
@@ -125,10 +117,9 @@ function FormLivros() {
     if (window.confirm('Tem certeza que deseja excluir este livro?')) {
       try {
         await livroService.deletarLivro(id);
-
         const novaLista = listaLivros.filter((livro) => livro.id !== id);
         setListaLivros(novaLista);
-        setListaFiltrada(novaLista);
+        aplicarFiltro(searchTerm, novaLista);
       } catch (erro) {
         console.error('Erro ao excluir livro:', erro);
         alert('Erro ao excluir livro. Tente novamente.');
@@ -139,21 +130,22 @@ function FormLivros() {
   const handleFiltrarChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+    aplicarFiltro(value);
+  };
 
-    if (value.trim() === '') {
-      setListaFiltrada(listaLivros);
+  const aplicarFiltro = (termo, lista = listaLivros) => {
+    if (termo.trim() === '') {
+      setListaFiltrada(lista);
     } else {
       setListaFiltrada(
-        listaLivros.filter((livro) =>
-          livro.Titulo.toLowerCase().includes(value.toLowerCase()) ||
-          livro.Autor.toLowerCase().includes(value.toLowerCase()) ||
-          livro.Categoria.toLowerCase().includes(value.toLowerCase()) ||
-          livro.Genero.toLowerCase().includes(value.toLowerCase())
+        lista.filter((livro) =>
+          livro.Titulo.toLowerCase().includes(termo.toLowerCase()) ||
+          livro.Autor.toLowerCase().includes(termo.toLowerCase()) ||
+          livro.Genero.toLowerCase().includes(termo.toLowerCase())
         )
       );
     }
   };
-
 
     return (
         <Stack gap={2} className='FormLivros'>
@@ -396,7 +388,7 @@ function FormLivros() {
             <InputGroup className="mb-3 input-filtro">
           <Form.Control
             type="text"
-            placeholder="Buscar por Título, Autor, Gênero ou Categoria"
+            placeholder="Buscar por Título, Autor, Gênero."
             value={searchTerm}
             onChange={handleFiltrarChange}
           />
@@ -466,6 +458,3 @@ function FormLivros() {
 
 
 export default FormLivros;
-
-
- 
