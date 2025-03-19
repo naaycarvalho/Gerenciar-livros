@@ -45,7 +45,13 @@ function SideBar() {
               <i className="bi bi-person-bounding-box"> Gerenciar Categorias</i>
             </Nav.Link>
           </Nav.Item>
+          <Nav.Item>
+            <Nav.Link as={Link} to="/Emprestimos" className="text-white mb-2">
+              <i className="bi bi-people"></i> Gerenciar Emprestimos
+            </Nav.Link>
+          </Nav.Item>
         </Nav>
+
         <div className="mt-auto w-100">
           <button type="button" className="botao">
             <i className="bi bi-box-arrow-right"></i> Sair

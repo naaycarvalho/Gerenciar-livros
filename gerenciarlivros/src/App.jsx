@@ -11,6 +11,7 @@ import FormAutores from './pages/gerenciarautor';
 import Generos from './pages/Generos';
 import MotivosBaixa from './pages/gerenciarmotivobaixa';
 import Categoria from './pages/Categoria';
+import Emprestimos from './pages/RegistrarEmprestimo';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/generos" element={<Generos />} />
           <Route path="/motivobaixa" element={<MotivosBaixa />} />
           <Route path="/categorias" element={<Categoria />} />
+          <Route path="/Emprestimos" element={<Emprestimos />} />
         </Routes>
       </Container>
     </div>
