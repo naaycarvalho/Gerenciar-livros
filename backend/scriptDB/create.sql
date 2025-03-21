@@ -70,3 +70,14 @@ CREATE TABLE categorias (
 	descricao VARCHAR(255) NOT NULL, 
 	tipo_categoria VARCHAR(150) NOT NULL
 ); 
+
+CREATE TABLE emprestimos (
+    id_emprestimo INT AUTO_INCREMENT PRIMARY KEY,
+    id_livro INT NOT NULL, 
+    id_usuario INT NOT NULL, 
+    data_emprestimo DATE NOT NULL, 
+    data_devolucao DATE DEFAULT NULL,
+    status_emprestimo VARCHAR(50) NOT NULL,
+    FOREIGN KEY (id_livro) REFERENCES livros(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE
+);

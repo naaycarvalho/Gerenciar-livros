@@ -1,146 +1,94 @@
-import { Form, Card, Row, Col, Button, Stack } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Form, Card, Row, Col, Button } from "react-bootstrap";
+import Stack from 'react-bootstrap/Stack';
+import LivroService from '../services/LivroService';
+import UsuarioService from '../services/UsuarioService';
 
-const Emprestimos = () => {
-    const [titulo, setTitulo] = useState('');
-    const [usuario, setUsuario] = useState('');
-    const [statusUsuario, setStatusUsuario] = useState('');
-    const [integridadeLivro, setIntegridadeLivro] = useState('---');
-    const [dataEmprestimo, setDataEmprestimo] = useState('');
-    const [dataDevolucao, setDataDevolucao] = useState('');
-
-    // Define a data de empréstimo automaticamente com a data atual
+const Emprestimo = () => {
+    const [livros, setLivros] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
     useEffect(() => {
-        const hoje = new Date().toISOString().split('T')[0];
-        setDataEmprestimo(hoje);
-        
-        // Define a data de devolução (exemplo: 7 dias depois)
-        let dataDev = new Date();
-        dataDev.setDate(dataDev.getDate() + 7);
-        setDataDevolucao(dataDev.toISOString().split('T')[0]);
+        const fetchData = async () => {
+            try {
+                const livroService = new LivroService();
+                const usuarioService = new UsuarioService();
+    
+                const livrosData = await livroService.obterTodosLivros();
+                const usuariosData = await usuarioService.obterUsuarios();
+    
+                console.log("Livros recebidos:", livrosData);
+                console.log("Usuários recebidos:", usuariosData);
+    
+                setLivros(livrosData);
+                setUsuarios(usuariosData);
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+            }
+        };
+    
+        fetchData();
     }, []);
-
-    // Simulação da busca de status do usuário no backend
-    const buscarStatusUsuario = (nome) => {
-        setUsuario(nome);
-        
-        // Simulação de uma requisição para buscar status do usuário
-        if (nome.toLowerCase() === "joão") {
-            setStatusUsuario("Ativo");
-        } else if (nome.toLowerCase() === "maria") {
-            setStatusUsuario("Bloqueado");
-        } else {
-            setStatusUsuario("Desconhecido");
-        }
-    };
-
-    // Simulação da busca da integridade do livro no backend
-    const buscarIntegridadeLivro = (nomeLivro) => {
-        setTitulo(nomeLivro);
-
-        // Simulação de resposta da API com a integridade do livro
-        if (nomeLivro.toLowerCase() === "dom quixote") {
-            setIntegridadeLivro("Bom estado");
-        } else if (nomeLivro.toLowerCase() === "1984") {
-            setIntegridadeLivro("Desgastado");
-        } else {
-            setIntegridadeLivro("Desconhecido");
-        }
-    };
+    
 
     return (
         <Stack gap={2} className='FormLivros'>
             <div className="p-2">
                 <Form noValidate>
                     <Card className="mb-3">
+                        <Card.Header>
+                            <h5 className="m-0">Registrar Empréstimo</h5>
+                        </Card.Header>
                         <Card.Body>
-                            <Form.Group controlId="FormTitulo" className="mb-3">
-                                <label>Nome do Livro</label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Digite o nome do livro"
-                                    name="Titulo"
-                                    value={titulo}
-                                    onChange={(e) => buscarIntegridadeLivro(e.target.value)}
-                                    required
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    O título completo do livro é obrigatório.
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Exibir a Integridade do Livro */}
-                            <Form.Group controlId="FormIntegridade" className="mb-3">
-                                <label>Integridade do Livro</label>
-                                <Form.Control
-                                    type="text"
-                                    name="Integridade"
-                                    value={integridadeLivro}
-                                    readOnly
-                                />
-                            </Form.Group>
-
-                            <Form.Group controlId="FormUsuario" className="mb-3">
-                                <label>Usuário</label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Digite o nome do usuário"
-                                    name="Usuario"
-                                    value={usuario}
-                                    onChange={(e) => buscarStatusUsuario(e.target.value)}
-                                    required
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    O nome do usuário é obrigatório.
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Exibir o Status do Usuário */}
-                            <Form.Group controlId="FormStatus" className="mb-3">
-                                <label>Status do Usuário</label>
-                                <Form.Control
-                                    type="text"
-                                    name="Status"
-                                    value={statusUsuario}
-                                    readOnly
-                                />
-                            </Form.Group>
-
-                            <Row className="mb-3">
-                                <Col md={6}>
-                                    <Form.Group controlId="FormDataEmprestimo" className="mb-3">
-                                        <label>Data de Empréstimo</label>
-                                        <Form.Control
-                                            type="date"
-                                            name="DataEmprestimo"
-                                            value={dataEmprestimo}
-                                            readOnly
-                                        />
+                            <Form.Group className="livro mb-3">
+                                <Form.Label>Nome do Livro</Form.Label>
+                              
+                                <Form.Select>
+                                     <option>Selecione o Livro</option>
+                                      {(Array.isArray(livros) ? livros : []).map((livro) => (
+                                        <option key={livro.id} value={livro.id}>{livro.Titulo}</option>
+                                        ))}
+                                        </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Nome do Aluno</Form.Label>
+                                            <Form.Select>
+                                                <option>Selecione o Aluno</option>
+                                                {(Array.isArray(usuarios) ? usuarios : []).map((usuario) => (
+                                                    <option key={usuario.id} value={usuario.id}>{usuario.nome}</option>
+                                                    ))}
+                                                    </Form.Select>
+                                                    </Form.Group>
+                                                    <Row className="mb-3">
+                                                        <Col md={6}>
+                                    <Form.Group controlId="dataEmprestimo">
+                                        <Form.Label>Data de Empréstimo</Form.Label>
+                                        <Form.Control type="date" />
                                     </Form.Group>
-                                </Col>
+                                </Col>                      
                                 <Col md={6}>
-                                    <Form.Group controlId="FormDataDevolucao" className="mb-3">
-                                        <label>Data de Devolução</label>
-                                        <Form.Control
-                                            type="date"
-                                            name="DataDevolucao"
-                                            value={dataDevolucao}
-                                            readOnly
-                                        />
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Data de Devolução</Form.Label>
+                                        <Form.Control type="date" />
                                     </Form.Group>
                                 </Col>
                             </Row>
-
-                            {/* Botão de Registrar Empréstimo */}
-                            <Button variant="primary" type="submit">
-                                Registrar Empréstimo
+                            <Form.Group className="mb-3">
+                                <Form.Label>Status do Empréstimo</Form.Label>
+                                <Form.Control type="text" placeholder="status" />
+                            </Form.Group>
+                            <Button variant="success" type='submit'  className="m-2">
+                                <i className="bi bi-check-lg">Salvar</i>
                             </Button>
+                            <Button variant="secondary" type="button" >Cancelar</Button>
+
                         </Card.Body>
+                      
                     </Card>
+                 
                 </Form>
             </div>
         </Stack>
     );
 };
 
-export default Emprestimos;
+export default Emprestimo;

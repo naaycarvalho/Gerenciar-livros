@@ -29,9 +29,8 @@ class CategoriaService {
             console.log(`Erro ao obter categoria com id: ${id}.`);
             return null;
         }
-
-        const dados = await response.json();
-        return dados;
+            const dados = await response.json();
+            return dados;
     }
 
     async cadastrarCategoria(categoria) {
