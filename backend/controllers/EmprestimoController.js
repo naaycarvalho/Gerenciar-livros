@@ -93,6 +93,12 @@ class EmprestimoController {
     async buscarEmprestimos(req, res) {
         try {
             const emprestimos = await Emprestimo.buscarTodos();
+       
+    
+            if (!emprestimos || emprestimos.length === 0) {
+                return res.status(200).json([]);
+            }
+    
             res.status(200).json(emprestimos);
         } catch (error) {
             console.error('Erro ao buscar emprestimos:', error);
@@ -102,6 +108,7 @@ class EmprestimoController {
             });
         }
     }
+    
 
     async buscarEmprestimosPorId(req, res) {
         try {

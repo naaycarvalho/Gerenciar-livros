@@ -2,8 +2,8 @@ const API_BASE_URL = 'http://localhost:3000'
 
 class UsuarioService {
 
-    async obterUsuarios(termo) {
-        const response = await fetch(`${API_BASE_URL}/usuario?termo=${termo}`, {
+    async obterUsuarios() {
+        const response = await fetch(`${API_BASE_URL}/usuario`, {
             headers: {
                 'Content-Type': 'application/json'
             }
