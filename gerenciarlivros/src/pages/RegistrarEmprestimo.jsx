@@ -32,7 +32,7 @@ const Emprestimo = () => {
                 const usuarioService = new UsuarioService();
                 
                 const livrosResponse = await livroService.obterTodosLivros();
-                const usuariosResponse = await usuarioService.obterUsuarios();
+                const usuariosResponse = await usuarioService.carregarUsuarios();
                 const emprestimosResponse = await fetch(`${API_BASE_URL}/emprestimo`);
                 const emprestimosData = await emprestimosResponse.json();
                 

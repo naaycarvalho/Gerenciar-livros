@@ -2,8 +2,25 @@ const API_BASE_URL = 'http://localhost:3000'
 
 class UsuarioService {
 
-    async obterUsuarios() {
+
+    async carregarUsuarios() {
         const response = await fetch(`${API_BASE_URL}/usuario`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if(!response.ok){
+            console.log('Erro ao obter todos os usuários.');
+            return [];
+        }
+
+        const dados = await response.json();
+        return dados;
+        
+    }
+    async obterUsuarios(termo) {
+        const response = await fetch(`${API_BASE_URL}/usuario?termo=${termo}`, {
             headers: {
                 'Content-Type': 'application/json'
             }
