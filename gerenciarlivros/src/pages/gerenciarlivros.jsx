@@ -4,8 +4,16 @@ import '../Componentes/FormLivros/formlivros.css';
 import { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import LivroService from '../services/LivroService';
+import AutorService from '../services/AutorService';
+import CategoriaService from '../services/CategoriaService';
+import GeneroService from '../services/GeneroService';
 
 const livroService = new LivroService();
+const service = new AutorService();
+const categoriaService = new CategoriaService();
+const generoService = new GeneroService();
+
+
 
 function FormLivros() {
   const [Livro, setLivro] = useState({
@@ -28,7 +36,11 @@ function FormLivros() {
   const [validated, setValidated] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [ListaFiltrada, setListaFiltrada] = useState([]);
+  const [listaAutor, setListaAutor] = useState([]);
+  const [listaCategorias, setListaCategorias] = useState([]);
+  const [listaGeneros, setListaGeneros] = useState([]);
 
+  
   // Função auxiliar para formatar datas no padrão dd/MM/yyyy
   const formatarData = (data) => {
     if (!data) return '';
@@ -39,10 +51,34 @@ function FormLivros() {
     });
   };
 
-  // Carregar livros ao inicializar
-  useEffect(() => {
-    carregarLivros();
-  }, []);
+  const carregarGeneros = async () => {
+    try {
+      const response = await generoService.carregarGeneros();
+      setListaGeneros(response.data || []);
+    } catch (erro) {
+      console.error('Erro ao carregar generos:', erro);
+    }
+  }
+
+  const carregarCategorias = async () => {
+    try {
+      const response = await categoriaService.carregarCategorias();
+      setListaCategorias(response.data || []);
+    } catch (erro) {
+      console.error('Erro ao carregar categorias:', erro);
+  }
+  };
+
+  const carregarAutores = async () => {
+    
+    try {
+      const response = await service.obterTodosAutores();
+      setListaAutor(response.data || []);
+    } catch (erro) {
+      console.error('Erro ao carregar autores:', erro);
+    }
+  }
+   
 
   const carregarLivros = async () => {
     try {
@@ -53,6 +89,14 @@ function FormLivros() {
       console.error('Erro ao carregar livros:', erro);
     }
   };
+
+  useEffect(() => {
+    carregarAutores();
+    carregarLivros();
+    carregarCategorias();
+    carregarGeneros();
+  }, []);
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -174,20 +218,27 @@ function FormLivros() {
 
                             <Row className="mb-3">
                                 <Col md={6}>
-                                    <Form.Group controlId="FormAutor">
-                                        <label>Autor </label>
-                                        <Form.Control 
-                                        type="text" 
-                                        placeholder="Digite o autor do Livro"
-                                        name="Autor"
-                                        value={Livro.Autor}
-                                        onChange={handleChange}
-                                        isInvalid={validated && Livro.Autor.trim() === ''}
-                                        required />
-                                        <Form.Control.Feedback type="invalid">
-                                        O nome do autor completo é obrigatório.
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                <Form.Group controlId="FormAutor">
+                                  <label>Autor</label>
+                                  <Form.Select
+                                    name="Autor"
+                                    value={Livro.Autor}
+                                    onChange={handleChange}
+                                    isInvalid={validated && Livro.Autor.trim() === ''}
+                                    required
+                                  >
+                                    <option value="">Selecione um autor</option>
+                                    {listaAutor?.map((autor) => (
+                                      <option key={autor.id} value={autor.Nome + ' ' + autor.Sobrenome} >
+                                        {autor.Nome} {autor.Sobrenome}
+                                      </option>
+                                    ))}
+                                  </Form.Select>
+                                  <Form.Control.Feedback type="invalid">
+                                    O nome do autor é obrigatório.
+                                  </Form.Control.Feedback>
+                                </Form.Group>
+
                                 </Col>
                                 <Col md={6}>
                                     <Form.Group controlId="FormEditora">
@@ -225,21 +276,26 @@ function FormLivros() {
                                     </Form.Group>
                                 </Col>
                                 <Col md={6}>
-                                    <Form.Group controlId="FormCategoria">
-                                        <label>Categoria </label>
-                                        <Form.Control 
-                                        type="text" 
-                                        placeholder=" Digite a Categoria"
-                                        name="Categoria"
-                                        value={Livro.Categoria}
-                                        className='form-control'
-                                        onChange={handleChange}
-                                        isInvalid={validated && Livro.Categoria.trim() === ''} 
-                                        required />
-                                        <Form.Control.Feedback type="invalid">
-                                           A Categoria do Livro é obrigatorio.
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                <Form.Group controlId="FormCategoria">
+                              <label>Categoria</label>
+                              <Form.Select
+                                name="Categoria"
+                                value={Livro.Categoria}
+                                onChange={handleChange}
+                                isInvalid={validated && Livro.Categoria.trim() === ''}
+                                required
+                              >
+                                <option value="">Selecione uma categoria</option>
+                                {listaCategorias?.map((categoria) => (
+                                  <option key={categoria.id} value={categoria.descricao}>
+                                    {categoria.descricao}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <Form.Control.Feedback type="invalid">
+                                A Categoria do Livro é obrigatória.
+                              </Form.Control.Feedback>
+                            </Form.Group>
                                 </Col>
                             </Row>
 
@@ -281,28 +337,26 @@ function FormLivros() {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
                             <Form.Group controlId="FormGenero" className="mb-3">
-                                <label> Genero </label>
-                                <Form.Select
-                                name="Genero"
-                                value={Livro.Genero}
-                                onChange={handleChange}
-                                isInvalid={validated && Livro.Genero.trim() === ''}
-                                required>
-                                
-                                    <option value="">Selecione o gênero do livro</option>
-                                    <option value ="Romance">Romance</option>
-                                    <option value="Fabula">Fábula</option>
-                                    <option value="Drama">Drama</option>
-                                    <option value="Terror">Terror</option>
-                                    <option value="Suspense">Suspense</option>
-                                    <option value="FiccaoCientifica">Ficção Científica</option>
-                                </Form.Select>
-                                <Form.Control.Feedback type="invalid">
-                                 O gênero do livro é obrigatorio.
-                                </Form.Control.Feedback>
-                            </Form.Group>
+                              <label>Gênero</label>
+                              <Form.Select
+                              name="Genero"
+                              value={Livro.Genero}
+                              onChange={handleChange}
+                              isInvalid={validated && Livro.Genero.trim() === ''}
+                              required
+                              >
+                              <option value="">Selecione um gênero</option>
+                              {listaGeneros?.map((genero) => (
+                                <option key={genero.id} value={genero.descricao}>
+                                  {genero.descricao}
+                                </option>
+                              ))}
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                              O gênero do livro é obrigatório.
+                            </Form.Control.Feedback>
+                           </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <label>  Estado conservação do livro </label>

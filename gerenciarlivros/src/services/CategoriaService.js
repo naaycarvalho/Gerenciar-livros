@@ -2,6 +2,22 @@ const API_BASE_URL = 'http://localhost:3000'
 
 class CategoriaService {
 
+    async carregarCategorias() {
+        const response = await fetch(`${API_BASE_URL}/categoria`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if(!response.ok){
+            console.log('Erro ao obter todas categoria.');
+            return [];
+        }
+
+        const dados = await response.json();
+        return dados;
+    }
+
     async obterCategorias(termo) {
         const response = await fetch(`${API_BASE_URL}/categoria?termo=${termo}`, {
             headers: {
