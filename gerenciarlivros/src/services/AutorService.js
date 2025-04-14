@@ -1,74 +1,65 @@
-const API_BASE_URL = 'http://localhost:3000';
+import { fetchWithAuth } from '../api/api';
+
 class AutorService {
+    
     async obterTodosAutores() {
-        const response = await fetch(`${API_BASE_URL}/autor`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (!response.ok) {
-            console.error('Erro ao obter todos os autores.', response.status, response.statusText);
+        try {
+            const dados = await fetchWithAuth('/autor');
+            return dados;
+        } catch (error) {
+            console.error('Erro ao obter todos os autores.', error.message);
             return [];
         }
-        const dados = await response.json();
-        return dados;
     }
+
     async obterAutorPorId(id) {
-        const response = await fetch(`${API_BASE_URL}/autor/${id}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (!response.ok) {
-            console.error(`Erro ao obter autor com id: ${id}.`, response.status, response.statusText);
+        try {
+            const dados = await fetchWithAuth(`/autor/${id}`);
+            return dados;
+        } catch (error) {
+            console.error(`Erro ao obter autor com id: ${id}.`, error.message);
             return null;
         }
-        const dados = await response.json();
-        return dados;
     }
-    async cadastrarAutor(Autor) {
-        console.log("Dados do autor:", Autor);  // Log para depuração
-        const response = await fetch(`${API_BASE_URL}/autor`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(Autor)
-        });
-        if (!response.ok) {
-            console.error('Erro ao cadastrar autor.', response.status, response.statusText);
+
+    async cadastrarAutor(autor) {
+        console.log("Dados do autor:", autor);  // Log para depuração
+        try {
+            const dados = await fetchWithAuth('/autor', {
+                method: 'POST',
+                body: JSON.stringify(autor)
+            });
+            return dados;
+        } catch (error) {
+            console.error('Erro ao cadastrar autor.', error.message);
             return null;
         }
-        const dados = await response.json();
-        return dados;
     }
-    async atualizarAutor(id, autoresAtualizados) {
-        const response = await fetch(`${API_BASE_URL}/autor/${id}`, {  // Corrigido para /autor/${id}
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(autoresAtualizados)
-        });
-        if (!response.ok) {
-            console.error(`Erro ao atualizar autor com id: ${id}.`, response.status, response.statusText);
+
+    async atualizarAutor(id, autorAtualizado) {
+        try {
+            const dados = await fetchWithAuth(`/autor/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(autorAtualizado)
+            });
+            return dados;
+        } catch (error) {
+            console.error(`Erro ao atualizar autor com id: ${id}.`, error.message);
             return null;
         }
-        const dados = await response.json();
-        return dados;
     }
+
     async deletarAutor(id) {
-        const response = await fetch(`${API_BASE_URL}/autor/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (!response.ok) {
-            console.error(`Erro ao deletar autor com id: ${id}.`, response.status, response.statusText);
+        try {
+            await fetchWithAuth(`/autor/${id}`, {
+                method: 'DELETE'
+            });
+            return true;
+        } catch (error) {
+            console.error(`Erro ao deletar autor com id: ${id}.`, error.message);
             return false;
         }
-        return true;
     }
 }
+
 export default AutorService;

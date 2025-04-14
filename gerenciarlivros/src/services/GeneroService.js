@@ -1,105 +1,72 @@
-const API_BASE_URL = 'http://localhost:3000'
+import { fetchWithAuth } from '../api/api';
 
 class GeneroService {
-
     async carregarGeneros() {
-        const response = await fetch(`${API_BASE_URL}/genero`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if(!response.ok){
-            console.log('Erro ao obter todos os gêneros.');
+        try {
+            const dados = await fetchWithAuth('/genero');
+            return dados;
+        } catch (error) {
+            console.log('Erro ao obter todos os gêneros.', error.message);
             return [];
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async obterGeneros(termo) {
-        const response = await fetch(`${API_BASE_URL}/genero?termo=${termo}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if(!response.ok){
-            console.log('Erro ao obter todos os gêneros.');
+        try {
+            const dados = await fetchWithAuth(`/genero?termo=${termo}`);
+            return dados;
+        } catch (error) {
+            console.log('Erro ao obter gêneros com termo.', error.message);
             return [];
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async obterGeneroPorId(id) {
-        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            console.log(`Erro ao obter o gênero com id: ${id}.`);
+        try {
+            const dados = await fetchWithAuth(`/genero/${id}`);
+            return dados;
+        } catch (error) {
+            console.log(`Erro ao obter o gênero com id: ${id}.`, error.message);
             return null;
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async cadastrarGenero(genero) {
-        const response = await fetch(`${API_BASE_URL}/genero`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(genero)
-        });
-
-        if (!response.ok) {
-            console.log('Erro ao cadastrar o gênero.');
+        try {
+            const dados = await fetchWithAuth('/genero', {
+                method: 'POST',
+                body: JSON.stringify(genero)
+            });
+            return dados;
+        } catch (error) {
+            console.log('Erro ao cadastrar o gênero.', error.message);
             return null;
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async atualizarGenero(id, generoAtualizado) {
-        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(generoAtualizado)
-        });
-
-        if (!response.ok) {
-            console.log(`Erro ao atualizar o gênero com id: ${id}.`);
+        try {
+            const dados = await fetchWithAuth(`/genero/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(generoAtualizado)
+            });
+            return dados;
+        } catch (error) {
+            console.log(`Erro ao atualizar o gênero com id: ${id}.`, error.message);
             return null;
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async deletarGenero(id) {
-        const response = await fetch(`${API_BASE_URL}/genero/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            console.log(`Erro ao deletar o gênero com id: ${id}.`);
+        try {
+            await fetchWithAuth(`/genero/${id}`, {
+                method: 'DELETE'
+            });
+            return true;
+        } catch (error) {
+            console.log(`Erro ao deletar o gênero com id: ${id}.`, error.message);
             return false;
         }
-
-        return true;
     }
 }
 

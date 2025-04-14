@@ -9,11 +9,18 @@ const motivobaixaRoutes = require('./routes/MotivoBaixaRoutes.js');
 const categoriaRoutes = require('./routes/CategoriasRoutes.js');
 const EmprestimoRoutes = require('./routes/EmprestimoRoutes.js');
 const app = express();
+const rotaAutenticacao = require('./routes/rotaAutenticacao')
+
+
+
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 app.use(cors())
 app.use(express.json())
 
-app.use('/usuario', usuariosRoutes);
+app.use('/usuario',usuariosRoutes);
 app.use('/fornecedor', fornecedoresRoutes);
 app.use('/livro', livrosRoutes);
 app.use('/genero', generoRoutes);
@@ -21,6 +28,7 @@ app.use('/autor', autorRoutes);
 app.use('/motivobaixa', motivobaixaRoutes);
 app.use('/categoria', categoriaRoutes);
 app.use('/emprestimo', EmprestimoRoutes);
+app.use('/autenticacao', rotaAutenticacao);
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });

@@ -4,6 +4,7 @@ import Stack from 'react-bootstrap/Stack';
 import LivroService from '../services/LivroService';
 import UsuarioService from '../services/UsuarioService';
 import './registrarEmprestimo.css';
+import { fetchWithAuth } from '../api/api';
 
 const Emprestimo = () => {
     const [livros, setLivros] = useState([]);
@@ -11,10 +12,8 @@ const Emprestimo = () => {
     const [emprestimos, setEmprestimos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [ListaFiltrada, setListaFiltrada] = useState([]);
-      const [validated, setValidated] = useState(false);
+    const [validated, setValidated] = useState(false);
 
-
- const API_BASE_URL = 'http://localhost:3000'
     
     const [FormData, setFormData] = useState({
         idEmprestimo: null,
@@ -25,62 +24,80 @@ const Emprestimo = () => {
         status: ""
     });
 
- useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const livroService = new LivroService();
-                const usuarioService = new UsuarioService();
-                
-                const livrosResponse = await livroService.obterTodosLivros();
-                const usuariosResponse = await usuarioService.carregarUsuarios();
-                const emprestimosResponse = await fetch(`${API_BASE_URL}/emprestimo`);
-                const emprestimosData = await emprestimosResponse.json();
-                
-                setLivros(Array.isArray(livrosResponse.data) ? livrosResponse.data : []);
-                setUsuarios(Array.isArray(usuariosResponse.data) ? usuariosResponse.data : []);
-                setEmprestimos(Array.isArray(emprestimosData) ? emprestimosData : []);
-                setListaFiltrada(Array.isArray(emprestimosData) ? emprestimosData : []);
-            } catch (error) {
-                console.error("Erro ao carregar dados:", error);
-            }
-        };
-        fetchData();
-    }, []);
+useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const livroService = new LivroService();
+            const usuarioService = new UsuarioService();
+            
+            const livrosResponse = await livroService.obterTodosLivros();
+            const usuariosResponse = await usuarioService.carregarUsuarios();
+            const emprestimosResponse = await fetchWithAuth(`/emprestimo`);
+            const emprestimosData = await emprestimosResponse;
 
-    useEffect(() => {
-        aplicarFiltro(searchTerm);
-    }, [searchTerm, emprestimos]);
-
-    const aplicarFiltro = (termo) => {
-        if (!termo.trim()) {
-            setListaFiltrada(emprestimos);
-        } else {
-            setListaFiltrada(
-                emprestimos.filter(emprestimo =>
-                    emprestimo.livro?.titulo.toLowerCase().includes(termo.toLowerCase()) ||
-                    emprestimo.usuario?.nome.toLowerCase().includes(termo.toLowerCase()) ||
-                    emprestimo.dataEmprestimo.toLowerCase().includes(termo.toLowerCase())
-                )
-            );
+            setLivros(Array.isArray(livrosResponse.data) ? livrosResponse.data : []);
+            setUsuarios(Array.isArray(usuariosResponse.data) ? usuariosResponse.data : []);
+            setEmprestimos(Array.isArray(emprestimosData) ? emprestimosData : []);
+            setListaFiltrada(Array.isArray(emprestimosData) ? emprestimosData : []);
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
         }
     };
+    fetchData();
+}, []);
+
+useEffect(() => {
+    const termo = searchTerm.toLowerCase();
+
+    const filtrados = emprestimos.filter((emp) => {
+        const titulo = emp.livro?.titulo?.toLowerCase() || '';
+        const nome = emp.usuario?.nome?.toLowerCase() || '';
+        const dataEmprestimo = new Date(emp.dataEmprestimo).toLocaleDateString('pt-BR');
+
+        return (
+            titulo.includes(termo) ||
+            nome.includes(termo) ||
+            dataEmprestimo.includes(termo)
+        );
+    });
+
+    setListaFiltrada(filtrados);
+}, [searchTerm, emprestimos]);
+
+
+
+
+useEffect(() => {
+    setListaFiltrada(emprestimos);
+}, [emprestimos]);
+
+const fetchEmprestimos = async () => {
+    try {
+        const data = await fetchWithAuth(`/emprestimo`);
+        setEmprestimos(data);
+        setListaFiltrada(data); 
+    } catch (error) {
+        console.error("Erro ao buscar empréstimos:", error);
+    }
+};
+
+
 
     const excluirEmprestimo = async (idEmprestimo) => {
         if (!window.confirm("Tem certeza que deseja excluir este empréstimo?")) return;
         try {
-            await fetch(`${API_BASE_URL}/emprestimo/${idEmprestimo}`, {
+            await fetchWithAuth(`/emprestimo/${idEmprestimo}`, {
                 method: "DELETE",
             });
     
-            setEmprestimos((prevEmprestimos) => 
-                prevEmprestimos.filter((emprestimo) => emprestimo.idEmprestimo !== idEmprestimo)
+            setEmprestimos((prev) => 
+                prev.filter((emprestimo) => emprestimo.idEmprestimo !== idEmprestimo)
             );
         } catch (error) {
             alert("Erro ao excluir o empréstimo. Tente novamente.");
             console.error(error);
         }
     };
-    
     const editarEmprestimo = async (Emprestimo) => {
         console.log("Editando empréstimo:", Emprestimo); 
     
@@ -99,7 +116,6 @@ const Emprestimo = () => {
     
 
     const handleSubmit = async (e) => {
-        
         e.preventDefault();
         
         const form = e.currentTarget;
@@ -109,59 +125,43 @@ const Emprestimo = () => {
             return;
         }
         
-        setValidated(true); // Habilita a validação do formulário
-    
+        setValidated(true);
+
         try {
             const data = { ...FormData };
-            console.log("Enviando dados do empréstimo:", data);
-    
             const method = data.idEmprestimo ? "PUT" : "POST";
             const url = data.idEmprestimo
-                ? `${API_BASE_URL}/emprestimo/${data.idEmprestimo}`
-                : `${API_BASE_URL}/emprestimo`;
-    
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                ? `/emprestimo/${data.idEmprestimo}`
+                : `/emprestimo`;
+
+            const response = await fetchWithAuth(url, {
+                method,
                 body: JSON.stringify(data),
             });
-    
-            if (!response.ok) {
-                throw new Error("Erro ao salvar empréstimo!");
-            }
-    
-            const emprestimo = await response.json();
-    
+
+            if (!response) throw new Error("Erro ao salvar empréstimo!");
+
+            const emprestimo = response;
+
             if (method === "POST") {
                 setEmprestimos((prev) => [...prev, emprestimo]);
             } else {
                 setEmprestimos((prev) =>
-                    prev.map((item) => (item.idEmprestimo === emprestimo.idEmprestimo ? emprestimo : item))
+                    prev.map((item) =>
+                        item.idEmprestimo === emprestimo.idEmprestimo ? emprestimo : item
+                    )
                 );
             }
-    
-            console.log("Empréstimo salvo com sucesso!", emprestimo);
-           await fetchEmprestimos();
+
+            await fetchEmprestimos();
             limparFormulario();
-            setValidated(false); // Reseta a validação após sucesso
+            setValidated(false);
         } catch (error) {
             console.error("Erro ao salvar empréstimo:", error);
             alert("Erro ao salvar o empréstimo. Tente novamente.");
         }
     };
     
-
-    const fetchEmprestimos = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/emprestimo");
-            const data = await response.json();
-            setEmprestimos(data);
-        } catch (error) {
-            console.error("Erro ao buscar empréstimos:", error);
-        }
-    };
 
     const limparFormulario = () => {
         setFormData({
@@ -330,7 +330,7 @@ const Emprestimo = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center">
+                                <td colSpan="7" className="text-center">
                                     Nenhum livro encontrado.
                                 </td>
                             </tr>

@@ -1,13 +1,24 @@
 import { Nav, Navbar,Container  } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import './sidebar.css';
+import { Link, useNavigate } from 'react-router-dom';
+import './sidebar.css'
+import { useAuth } from '../../contexts/AuthContext'
 
 function SideBar() {
+  const {userName,logout} =useAuth()
+  const navigate = useNavigate();
+  console.log("userName no SideBar:", userName);
+
+  const handleLogout = ()=>{
+      logout() 
+     navigate('/login')
+ }
   return (
     <Navbar bg="dark" className="p-3 sidebar">
       <Container className="d-flex flex-column h-100">
         <Link to="/" className="text-white text-decoration-none align-self-start">
           <span className="fs-4"><i className="bi bi-list"></i></span>
+          <br />
+          <span className="text-light me-3">Olá, {userName.usuario}</span>
         </Link>
         <Nav defaultActiveKey="/" className="flex-column mt-4 mb-auto">
           <Nav.Item>
@@ -53,7 +64,7 @@ function SideBar() {
         </Nav>
 
         <div className="mt-auto w-100">
-          <button type="button" className="botao">
+          <button type="button" className="botao" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right"></i> Sair
           </button>
         </div>

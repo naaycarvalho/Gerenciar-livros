@@ -1,85 +1,65 @@
-const API_BASE_URL = 'http://localhost:3000'
+import { fetchWithAuth } from '../api/api'; // ajuste o caminho se necessário
 
 class EmprestimoService {
-    
-    async obterEmprestimos(termo) {
-        const response = await fetch(`${API_BASE_URL}/emprestimos?termo=${termo}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
 
-        if (!response.ok) {
-            console.log('Erro ao obter todos os empréstimos.');
+    async obterEmprestimos(termo) {
+        try {
+            const dados = await fetchWithAuth(`/emprestimo?termo=${termo}`);
+            return dados;
+        } catch (error) {
+            console.error('Erro ao obter todos os empréstimos.', error.message);
             return [];
         }
-
-        const dados = await response.json();
-        return dados;
     }
 
     async obterEmprestimosPorId(id) {
-        const response = await fetch(`${API_BASE_URL}/emprestimos/${id}`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            console.log(`Erro ao obter o empréstimo com id: ${id}.`);
+        try {
+            const dados = await fetchWithAuth(`/emprestimo/${id}`);
+            return dados;
+        } catch (error) {
+            console.error(`Erro ao obter o empréstimo com id: ${id}.`, error.message);
             return null;
         }
-            const dados = await response.json();
-            return dados;
-        }
+    }
 
-        async cadastrarEmprestimo(Emprestimo) {
-            console.log("Dados do empréstimo:", Emprestimo);  // Log para depuração
-            const response = await fetch(`${API_BASE_URL}/emprestimos`, {
+    async cadastrarEmprestimo(emprestimo) {
+        console.log("Dados do empréstimo:", emprestimo);
+        try {
+            const dados = await fetchWithAuth(`/emprestimo`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(Emprestimo)
+                body: JSON.stringify(emprestimo)
             });
-            if (!response.ok) {
-                console.error('Erro ao cadastrar empréstimo.', response.status, response.statusText);
-                return null;
-            }
-            const dados = await response.json();
             return dados;
-        }
-
-        async atualizarEmprestimo(id, EmprestimoAtualizado) {
-            const response = await fetch(`${API_BASE_URL}/emprestimos/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(EmprestimoAtualizado)
-            });
-            if (!response.ok) {
-                console.log(`Erro ao atualizar o empréstimo com id: ${id}.`);
-                return null;
-            }
-            const dados = await response.json();
-            return dados;
-        }
-
-        async excluirEmprestimo(id) {
-            const response = await fetch(`${API_BASE_URL}/emprestimos/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!response.ok) {
-                console.log(`Erro ao excluir o empréstimo com id: ${id}.`);
-                return false;
-            }
-            return true;
+        } catch (error) {
+            console.error('Erro ao cadastrar empréstimo.', error.message);
+            return null;
         }
     }
-     export default new EmprestimoService();
-    
 
+    async atualizarEmprestimo(id, emprestimoAtualizado) {
+        try {
+            const dados = await fetchWithAuth(`/emprestimo/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(emprestimoAtualizado)
+            });
+            return dados;
+        } catch (error) {
+            console.error(`Erro ao atualizar o empréstimo com id: ${id}.`, error.message);
+            return null;
+        }
+    }
+
+    async excluirEmprestimo(id) {
+        try {
+            await fetchWithAuth(`/emprestimo/${id}`, {
+                method: 'DELETE'
+            });
+            return true;
+        } catch (error) {
+            console.error(`Erro ao excluir o empréstimo com id: ${id}.`, error.message);
+            return false;
+        }
+    }
+}
+
+export default new EmprestimoService();
